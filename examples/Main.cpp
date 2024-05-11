@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+#include <MK/Graphics.hpp>
+
 // Constants
 constexpr unsigned int WINDOW_WIDTH  {800u};
 constexpr unsigned int WINDOW_HEIGHT {600u};
@@ -46,11 +48,13 @@ int main()
   }
 
   // Clear Color
-  GLclampf red   {0.0f};
-  GLclampf green {0.0f};
-  GLclampf blue  {0.0f};
-  GLclampf alpha {1.0f};
-  glClearColor(red, green, blue, alpha);
+  mk::Color::RGBA clearColor {0, 0, 0, 1.f};
+  glClearColor(
+    clearColor.red,
+    clearColor.green,
+    clearColor.blue,
+    clearColor.alpha
+  );
 
   // Main Loop
   while (!glfwWindowShouldClose(window))

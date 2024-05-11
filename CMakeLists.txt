@@ -13,12 +13,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED 17)
 # Finding Library Include Directories
 find_path(GLEW_INCLUDE_DIR NAMES GL/glew.h HINTS "${CMAKE_SOURCE_DIR}/include")
 find_path(GLFW_INCLUDE_DIR NAMES GLFW/glfw3.h HINTS "${CMAKE_SOURCE_DIR}/include")
+set(MK_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
 # Validating Library Include Paths
 if(NOT GLEW_INCLUDE_DIR)
   message(FATAL_ERROR "GLEW Include Directory not found!")
 elseif(NOT GLFW_INCLUDE_DIR)
   message(FATAL_ERROR "GLFW Include Directory not found!")
+elseif(NOT GLFW_INCLUDE_DIR)
+  message(FATAL_ERROR "MK Include Directory not found!")
 endif()
 
 # Finding Library Binaries
@@ -35,6 +38,7 @@ endif()
 # Include Paths
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLFW_INCLUDE_DIR})
+include_directories(${MK_INCLUDE_DIR})
 
 # Linking Libraries
 link_libraries(GL)
