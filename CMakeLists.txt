@@ -46,4 +46,5 @@ link_libraries(${GLEW_LIB})
 link_libraries(${GLFW_LIB})
 
 # Subdirectories
+add_subdirectory(src)
 add_subdirectory(examples)

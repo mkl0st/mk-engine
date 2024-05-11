@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+#include <MK/Core.hpp>
 #include <MK/Graphics.hpp>
 
 // Constants
@@ -14,11 +15,7 @@ const     std::string  WINDOW_TITLE  {"MK Engine"};
 int main()
 {
   // Initializing GLFW
-  glfwInit();
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+  mk::Core::initializeGLFW();
 
   // Creating a Window
   GLFWwindow* window = glfwCreateWindow(
@@ -37,11 +34,8 @@ int main()
   glfwMakeContextCurrent(window);
 
   // Initializing GLEW
-  GLenum glewErr = glewInit();
-  if (glewErr != GLEW_OK)
+  if (!mk::Core::initializeGLEW())
   {
-    std::cerr << "Failed to initialize GLEW!\n";
-    std::cerr << "Error: " << glewGetErrorString(glewErr) << '\n';
     glfwDestroyWindow(window);
     glfwTerminate();
     return EXIT_FAILURE;
@@ -55,6 +49,11 @@ int main()
     clearColor.blue,
     clearColor.alpha
   );
+
+  // Printing Engine and Version Info
+  mk::Core::printEngineInfo();
+  std::cout << '\n';
+  mk::Core::printVersionInfo();
 
   // Main Loop
   while (!glfwWindowShouldClose(window))
