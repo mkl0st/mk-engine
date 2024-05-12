@@ -85,6 +85,46 @@ namespace mk
       private:
         GLuint ID {0};
     };
+
+    /**
+     * @brief A class representing a Element Buffer Object (EBO) in OpenGL.
+     */
+    class EBO
+    {
+      public:
+        /**
+         * @brief Constructs a EBO object with the specified index data.
+         * @tparam size The size of the index data array.
+         * @param indices The array containing the index data.
+         */
+        template<std::size_t size>
+        EBO(const std::array<GLuint, size>& indices)
+        {
+          glGenBuffers(1, &this->ID);
+          glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ID);
+          glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLfloat), indices.data(), GL_STATIC_DRAW);
+          glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+
+        /**
+         * @brief Binds the EBO.
+         */
+        void Bind()
+        { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ID); }
+        /**
+         * @brief Unbinds the EBO.
+         */
+        void Unbind()
+        { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+        /**
+         * @brief Deletes the EBO.
+         */
+        void Delete()
+        { glDeleteBuffers(1, &this->ID); }
+
+      private:
+        GLuint ID {0};
+    };
   }
 }
 

@@ -14,7 +14,7 @@ constexpr unsigned int WINDOW_HEIGHT {600u};
 const     std::string  WINDOW_TITLE  {"MK Engine"};
 
 // Vertices and Indices
-std::array<GLfloat, 6 * 6> vertices =
+const std::array<GLfloat, 6 * 6> vertices =
 {
   -0.5f,  -0.5f, 0.f, 1.f, 1.f, 1.f,
    0.0f,  -0.5f, 0.f, 1.f, 1.f, 1.f,
@@ -23,7 +23,7 @@ std::array<GLfloat, 6 * 6> vertices =
    0.25f,  0.0f, 0.f, 1.f, 1.f, 1.f,
    0.0f,   0.5f, 0.f, 1.f, 1.f, 1.f,
 };
-const GLuint indices[] =
+const std::array<GLuint, 9> indices =
 {
   0, 1, 3,
   1, 2, 4,
@@ -78,16 +78,13 @@ int main()
   // VAO, VBO, and EBO
   GLuint VAO;
   mk::Graphics::VBO VBO {vertices};
-  GLuint EBO;
+  mk::Graphics::EBO EBO {indices};
 
   glGenVertexArrays(1, &VAO);
-  glGenBuffers(1, &EBO);
 
   glBindVertexArray(VAO);
   VBO.Bind();
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+  EBO.Bind();
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
   glEnableVertexAttribArray(0);
@@ -95,7 +92,8 @@ int main()
   glEnableVertexAttribArray(1);
 
   glBindVertexArray(0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  VBO.Unbind();
+  EBO.Unbind();
 
   // Printing Engine and Version Info
   mk::Core::printEngineInfo();
@@ -116,7 +114,7 @@ int main()
   // Program Termination
   glDeleteVertexArrays(1, &VAO);
   VBO.Delete();
-  glDeleteBuffers(1, &EBO);
+  EBO.Delete();
   defaultShader.Delete();
   glfwDestroyWindow(window);
   glfwTerminate();
