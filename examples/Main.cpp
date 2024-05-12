@@ -90,6 +90,11 @@ int main()
   // Line Mode
   mk::Graphics::useLineMode();
 
+  // Vector Testing
+  mk::Space::Vec2 vecOne {1.f, 2.f};
+  mk::Space::Vec2 vecTwo {4.f, -5.f};
+  mk::Debug::printVector(vecOne + vecTwo);
+
   // Main Loop
   while (window.isOpen())
   {

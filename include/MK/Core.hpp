@@ -8,6 +8,8 @@
 #include "Core/Constants.hpp"
 #include "Core/Setup.hpp"
 #include "Core/File.hpp"
+#include "Core/Space.hpp"
+#include "Core/Debug.hpp"
 
 namespace mk
 {
