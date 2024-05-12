@@ -36,6 +36,11 @@ void mk::Core::printVersionInfo()
   std::cout << "GLFW:   " << glfwGetVersionString() << '\n';
 }
 
+void mk::Core::terminate()
+{
+  glfwTerminate();
+}
+
 std::string mk::File::getContents(const std::string& path)
 {
   std::ifstream file(path);

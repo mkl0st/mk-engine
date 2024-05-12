@@ -36,26 +36,17 @@ int main()
   mk::Core::initializeGLFW();
 
   // Creating a Window
-  GLFWwindow* window = glfwCreateWindow(
+  mk::Window window
+  {
     WINDOW_WIDTH,
     WINDOW_HEIGHT,
-    WINDOW_TITLE.c_str(),
-    NULL,
-    NULL
-  );
-  if (window == nullptr)
-  {
-    std::cerr << "Failed to create a GLFW window!\n";
-    glfwTerminate();
-    return EXIT_FAILURE;
-  }
-  glfwMakeContextCurrent(window);
+    WINDOW_TITLE
+  };
 
   // Initializing GLEW
   if (!mk::Core::initializeGLEW())
   {
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    mk::Core::terminate();
     return EXIT_FAILURE;
   }
 
@@ -96,15 +87,18 @@ int main()
   std::cout << '\n';
   mk::Core::printVersionInfo();
 
+  // Line Mode
+  mk::Graphics::useLineMode();
+
   // Main Loop
-  while (!glfwWindowShouldClose(window))
+  while (window.isOpen())
   {
-    glfwPollEvents();
-    glClear(GL_COLOR_BUFFER_BIT);
+    window.update();
+    window.clear();
     defaultShader.Use();
     VAO.Bind();
     glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, NULL);
-    glfwSwapBuffers(window);
+    window.render();
   }
 
   // Program Termination
@@ -112,7 +106,6 @@ int main()
   VBO.Delete();
   EBO.Delete();
   defaultShader.Delete();
-  glfwDestroyWindow(window);
-  glfwTerminate();
+  mk::Core::terminate();
   return EXIT_SUCCESS;
 }

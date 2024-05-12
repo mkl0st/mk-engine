@@ -24,6 +24,11 @@ namespace mk
      * @brief Prints version information about the MK Engine dependencies.
      */
     void printVersionInfo();
+
+    /**
+     * @brief Terminates the MK Engine.
+     */
+    void terminate();
   }
 }
 

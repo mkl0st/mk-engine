@@ -10,6 +10,9 @@ project(${PROJECT_NAME})
 # CXX Standard
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
+# Compile Commands
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Finding Library Include Directories
 find_path(GLEW_INCLUDE_DIR NAMES GL/glew.h HINTS "${CMAKE_SOURCE_DIR}/include")
 find_path(GLFW_INCLUDE_DIR NAMES GLFW/glfw3.h HINTS "${CMAKE_SOURCE_DIR}/include")

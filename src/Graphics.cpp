@@ -1,5 +1,11 @@
 #include <MK/Graphics.hpp>
 
+void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+  (void)window;
+  glViewport(0, 0, width, height);
+}
+
 mk::Graphics::Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {
   // Shaders
@@ -42,16 +48,16 @@ mk::Graphics::Shader::Shader(const std::string& vertexPath, const std::string& f
   }
 
   // Shader Program
-  this->ID = glCreateProgram();
-  glAttachShader(this->ID, vertexShader);
-  glAttachShader(this->ID, fragmentShader);
-  glLinkProgram(this->ID);
+  ID = glCreateProgram();
+  glAttachShader(ID, vertexShader);
+  glAttachShader(ID, fragmentShader);
+  glLinkProgram(ID);
 
   // Validating the Shader Program
-  glGetProgramiv(this->ID, GL_LINK_STATUS, &success);
+  glGetProgramiv(ID, GL_LINK_STATUS, &success);
   if (!success)
   {
-    glGetProgramInfoLog(this->ID, mk::Constants::INFO_LOG_SIZE, NULL, infoLog);
+    glGetProgramInfoLog(ID, mk::Constants::INFO_LOG_SIZE, NULL, infoLog);
     std::cerr << "Failed to link the shader program!\n";
     std::cerr << "Error: " << infoLog << '\n';
   }
@@ -63,4 +69,37 @@ void mk::Graphics::VAO::LinkAttrib(const mk::Graphics::VBO& VBO, GLuint layout, 
   glVertexAttribPointer(layout, size, type, GL_FALSE, stride, offset);
   glEnableVertexAttribArray(layout);
   VBO.Unbind();
+}
+
+void mk::Window::_initialize()
+{
+  glfwInstance = glfwCreateWindow(
+    this->width,
+    this->height,
+    this->title.c_str(),
+    NULL,
+    NULL
+  );
+  if (glfwInstance == nullptr)
+  {
+    std::cerr << "Failed to create a GLFW window!\n";
+    mk::Core::terminate();
+  }
+  glfwMakeContextCurrent(glfwInstance);
+  glfwSetFramebufferSizeCallback(glfwInstance, framebufferSizeCallback);
+}
+
+void mk::Window::update()
+{
+  glfwPollEvents();
+}
+
+void mk::Window::clear()
+{
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void mk::Window::render()
+{
+  glfwSwapBuffers(glfwInstance);
 }

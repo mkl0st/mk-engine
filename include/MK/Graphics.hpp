@@ -7,8 +7,10 @@
 #include <array>
 
 #include "Core/Constants.hpp"
+#include "Core/Setup.hpp"
 #include "Core/File.hpp"
 #include "Graphics/Color.hpp"
+#include "Graphics/Window.hpp"
 
 namespace mk
 {
@@ -18,6 +20,22 @@ namespace mk
    */
   namespace Graphics
   {
+    /**
+     * @brief Namespace for graphics-related functionality of the MK Engine.
+     */
+    inline void usePointMode()
+    { glPolygonMode(GL_FRONT_AND_BACK, GL_POINT); }
+    /**
+     * @brief Sets the OpenGL polygon mode to line mode.
+     */
+    inline void useLineMode()
+    { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }
+    /**
+     * @brief Sets the OpenGL polygon mode to fill mode.
+     */
+    inline void useFillMode()
+    { glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); }
+
     /**
      * @brief A class representing a shader program in OpenGL.
      */
