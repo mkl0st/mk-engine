@@ -1,6 +1,8 @@
 #ifndef MK_SPACE_HPP
 #define MK_SPACE_HPP
 
+#include <cmath>
+
 namespace mk
 {
   /**
@@ -82,6 +84,22 @@ namespace mk
           };
         };
         /**
+         * @brief Overloaded division operator.
+         * Divides each component of the vector by a scalar value.
+         * @tparam T The type of the scalar value.
+         * @param scalar The scalar value to divide each component by.
+         * @return The result of the division operation.
+         */
+        template<typename T>
+        mk::Space::Vec2 operator/(const T scalar) const
+        {
+          return
+          {
+            this->x / scalar,
+            this->y / scalar,
+          };
+        };
+        /**
          * @brief Overloaded friend multiplication operator.
          * Multiplies a scalar value with the vector.
          * @tparam T The type of the scalar value.
@@ -96,6 +114,23 @@ namespace mk
           {
             vec.x * scalar,
             vec.y * scalar,
+          };
+        };
+        /**
+         * @brief Overloaded friend division operator.
+         * Divides each component of a vector by a scalar value.
+         * @tparam T The type of the scalar value.
+         * @param scalar The scalar value to divide each component by.
+         * @param vec The vector whose components will be divided.
+         * @return The result of the division operation.
+         */
+        template<typename T>
+        friend mk::Space::Vec2 operator/(const T scalar, const mk::Space::Vec2& vec)
+        {
+          return
+          {
+            vec.x / scalar,
+            vec.y / scalar,
           };
         };
         /**
@@ -134,6 +169,20 @@ namespace mk
         {
           this->x *= scalar;
           this->y *= scalar;
+          return *this;
+        }
+        /**
+         * @brief Compound division assignment operator.
+         * Divides each component of the vector by a scalar value.
+         * @tparam T The type of the scalar value.
+         * @param scalar The scalar value to divide each component by.
+         * @return Reference to the updated vector.
+         */
+        template<typename T>
+        mk::Space::Vec2& operator/=(const T scalar)
+        {
+          this->x /= scalar;
+          this->y /= scalar;
           return *this;
         }
 
@@ -219,6 +268,23 @@ namespace mk
           };
         };
         /**
+         * @brief Overloaded division operator.
+         * Divides each component of the vector by a scalar value.
+         * @tparam T The type of the scalar value.
+         * @param scalar The scalar value to divide each component by.
+         * @return The result of the division operation.
+         */
+        template<typename T>
+        mk::Space::Vec3 operator/(const T scalar) const
+        {
+          return
+          {
+            this->x / scalar,
+            this->y / scalar,
+            this->z / scalar,
+          };
+        };
+        /**
          * @brief Overloaded friend multiplication operator.
          * Multiplies a scalar value with the vector.
          * @tparam T The type of the scalar value.
@@ -234,6 +300,24 @@ namespace mk
             vec.x * scalar,
             vec.y * scalar,
             vec.z * scalar,
+          };
+        };
+        /**
+         * @brief Overloaded friend division operator.
+         * Divides each component of a vector by a scalar value.
+         * @tparam T The type of the scalar value.
+         * @param scalar The scalar value to divide each component by.
+         * @param vec The vector whose components will be divided.
+         * @return The result of the division operation.
+         */
+        template<typename T>
+        friend mk::Space::Vec3 operator/(const T scalar, const mk::Space::Vec3& vec)
+        {
+          return
+          {
+            vec.x / scalar,
+            vec.y / scalar,
+            vec.z / scalar,
           };
         };
         /**
@@ -277,12 +361,96 @@ namespace mk
           this->z *= scalar;
           return *this;
         }
+        /**
+         * @brief Compound division assignment operator.
+         * Divides each component of the vector by a scalar value.
+         * @tparam T The type of the scalar value.
+         * @param scalar The scalar value to divide each component by.
+         * @return Reference to the updated vector.
+         */
+        template<typename T>
+        mk::Space::Vec3& operator/=(const T scalar)
+        {
+          this->x /= scalar;
+          this->y /= scalar;
+          this->z /= scalar;
+          return *this;
+        }
 
         float x {0.f};
         float y {0.f};
         float z {0.f};
     };
 
+    /**
+     * @brief Calculates the length of a 2D vector.
+     * @param vec The 2D vector.
+     * @return The length of the vector.
+     */
+    inline float length(const mk::Space::Vec2& vec)
+    { return std::sqrtf(std::pow(vec.x, 2) + std::pow(vec.y, 2)); }
+    /**
+     * @brief Calculates the length of a 3D vector.
+     * @param vec The 3D vector.
+     * @return The length of the vector.
+     */
+    inline float length(const mk::Space::Vec3& vec)
+    { return std::sqrtf(std::pow(vec.x, 2) + std::pow(vec.y, 2) + std::pow(vec.z, 2)); }
+    /**
+     * @brief Normalizes a 2D vector.
+     * @param vec The 2D vector to normalize.
+     * @return The normalized vector.
+     */
+    inline mk::Space::Vec2 normalize(const mk::Space::Vec2& vec)
+    {
+      const float length = mk::Space::length(vec);
+      return length > 0.f
+        ? vec / length
+        : mk::Space::Vec2(0.f);
+    }
+    /**
+     * @brief Normalizes a 3D vector.
+     * @param vec The 3D vector to normalize.
+     * @return The normalized vector.
+     */
+    inline mk::Space::Vec3 normalize(const mk::Space::Vec3& vec)
+    {
+      const float length = mk::Space::length(vec);
+      return length > 0.f
+        ? vec / length
+        : mk::Space::Vec3(0.f);
+    }
+    /**
+     * @brief Calculates the dot product of two 2D vectors.
+     * @param vecOne The first 2D vector.
+     * @param vecTwo The second 2D vector.
+     * @return The dot product of the two vectors.
+     */
+    inline float dot(const mk::Space::Vec2& vecOne, const mk::Space::Vec2& vecTwo)
+    { return vecOne.x * vecTwo.x + vecOne.y * vecTwo.y; }
+    /**
+     * @brief Calculates the dot product of two 3D vectors.
+     * @param vecOne The first 3D vector.
+     * @param vecTwo The second 3D vector.
+     * @return The dot product of the two vectors.
+     */
+    inline float dot(const mk::Space::Vec3& vecOne, const mk::Space::Vec3& vecTwo)
+    { return vecOne.x * vecTwo.x + vecOne.y * vecTwo.y + vecOne.z * vecTwo.z; }
+    /**
+     * @brief Calculates the cross product of two 3D vectors.
+     * @param vecOne The first 3D vector.
+     * @param vecTwo The second 3D vector.
+     * @return The cross product of the two vectors.
+     */
+    inline mk::Space::Vec3 cross(const mk::Space::Vec3& vecOne, const mk::Space::Vec3& vecTwo)
+    {
+      return
+      {
+        vecOne.y * vecTwo.z - vecOne.z * vecTwo.y,
+        vecOne.z * vecTwo.x - vecOne.x * vecTwo.z,
+        vecOne.x * vecTwo.y - vecOne.y * vecTwo.x,
+      };
+    };
   }
 }
 

@@ -93,7 +93,7 @@ int main()
   // Vector Testing
   mk::Space::Vec3 vecOne {1.f, 2.f, -2.f};
   mk::Space::Vec3 vecTwo {4.f, -5.f, 3.f};
-  mk::Debug::printVector(vecOne + vecTwo);
+  mk::Debug::printVector(mk::Space::cross(vecOne, vecTwo));
 
   // Main Loop
   while (window.isOpen())
