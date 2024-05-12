@@ -35,3 +35,16 @@ void mk::Core::printVersionInfo()
   std::cout << "GLEW:   " << glewGetString(GLEW_VERSION) << '\n';
   std::cout << "GLFW:   " << glfwGetVersionString() << '\n';
 }
+
+std::string mk::File::getContents(const std::string& path)
+{
+  std::ifstream file(path);
+  if (!file.is_open())
+  {
+    std::cerr << "Failed to open file (" << path << ")!\n";
+    return "";
+  }
+  std::ostringstream buffer;
+  buffer << file.rdbuf();
+  return buffer.str();
+}

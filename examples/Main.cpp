@@ -15,26 +15,6 @@ const     std::string  WINDOW_TITLE  {"MK Engine"};
 // Constants
 constexpr unsigned int INFO_LOG_SIZE {512u};
 
-// Shader Source Codes
-const char* vertexShaderSource =
-  "#version 330 core\n"
-  "layout (location = 0) in vec3 aPos;\n"
-  "layout (location = 1) in vec3 aCol;\n"
-  "out vec3 vertCol;\n"
-  "void main()\n"
-  "{\n"
-  "  vertCol = aCol;\n"
-  "  gl_Position = vec4(aPos, 1.f);\n"
-  "}\0";
-const char* fragmentShaderSource =
-  "#version 330 core\n"
-  "in vec3 vertCol;\n"
-  "out vec4 FragColor;\n"
-  "void main()\n"
-  "{\n"
-  "  FragColor = vec4(vertCol, 1.f);\n"
-  "}\0";
-
 // Vertices and Indices
 const GLfloat vertices[] =
 {
@@ -94,8 +74,15 @@ int main()
   GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
   GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-  glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-  glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+  // Shader Source Codes
+  std::string vertexShaderSource = mk::File::getContents("resources/Shaders/default.vert");
+  std::string fragmentShaderSource = mk::File::getContents("resources/Shaders/default.frag");
+
+  const char* vertexShaderSourceC = vertexShaderSource.c_str();
+  const char* fragmentShaderSourceC = fragmentShaderSource.c_str();
+
+  glShaderSource(vertexShader, 1, &vertexShaderSourceC, NULL);
+  glShaderSource(fragmentShader, 1, &fragmentShaderSourceC, NULL);
 
   glCompileShader(vertexShader);
   glCompileShader(fragmentShader);

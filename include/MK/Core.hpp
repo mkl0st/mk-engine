@@ -7,6 +7,7 @@
 
 #include "Core/Constants.hpp"
 #include "Core/Setup.hpp"
+#include "Core/File.hpp"
 
 namespace mk
 {
