@@ -20,6 +20,14 @@ namespace mk
     {
       std::cout << "X: " << vec.x << "; Y: " << vec.y << '\n';
     }
+    /**
+     * @brief Prints the components of a 3D vector.
+     * @param vec The 3D vector to print.
+     */
+    inline void printVector(const mk::Space::Vec3& vec)
+    {
+      std::cout << "X: " << vec.x << "; Y: " << vec.y << "; Z: " << vec.z << '\n';
+    }
   }
 }
 
