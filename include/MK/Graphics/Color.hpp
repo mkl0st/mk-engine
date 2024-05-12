@@ -6,7 +6,7 @@
 namespace mk
 {
   /**
-   * Namespace for color-related functionality in the MK Engine.
+   * Namespace for color-related functionality of the MK Engine.
    * @namespace Color
    */
   namespace Color

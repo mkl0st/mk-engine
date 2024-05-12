@@ -12,9 +12,6 @@ constexpr unsigned int WINDOW_WIDTH  {800u};
 constexpr unsigned int WINDOW_HEIGHT {600u};
 const     std::string  WINDOW_TITLE  {"MK Engine"};
 
-// Constants
-constexpr unsigned int INFO_LOG_SIZE {512u};
-
 // Vertices and Indices
 const GLfloat vertices[] =
 {
@@ -70,59 +67,12 @@ int main()
     clearColor.alpha
   );
 
-  // Shaders
-  GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-  // Shader Source Codes
-  std::string vertexShaderSource = mk::File::getContents("resources/Shaders/default.vert");
-  std::string fragmentShaderSource = mk::File::getContents("resources/Shaders/default.frag");
-
-  const char* vertexShaderSourceC = vertexShaderSource.c_str();
-  const char* fragmentShaderSourceC = fragmentShaderSource.c_str();
-
-  glShaderSource(vertexShader, 1, &vertexShaderSourceC, NULL);
-  glShaderSource(fragmentShader, 1, &fragmentShaderSourceC, NULL);
-
-  glCompileShader(vertexShader);
-  glCompileShader(fragmentShader);
-
-  // Info Log
-  int success {0};
-  char infoLog[INFO_LOG_SIZE];
-
-  // Validating the Vertex Shader
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-  if (!success)
-  {
-    glGetShaderInfoLog(vertexShader, INFO_LOG_SIZE, NULL, infoLog);
-    std::cerr << "Failed to compile the vertex shader!\n";
-    std::cerr << "Error: " << infoLog << '\n';
-  }
-
-  // Validating the Fragment Shader
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-  if (!success)
-  {
-    glGetShaderInfoLog(fragmentShader, INFO_LOG_SIZE, NULL, infoLog);
-    std::cerr << "Failed to compile the fragment shader!\n";
-    std::cerr << "Error: " << infoLog << '\n';
-  }
-
   // Shader Program
-  GLuint shaderProgram = glCreateProgram();
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
-  glLinkProgram(shaderProgram);
-
-  // Validating the Shader Program
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-  if (!success)
+  mk::Graphics::Shader defaultShader
   {
-    glGetProgramInfoLog(shaderProgram, INFO_LOG_SIZE, NULL, infoLog);
-    std::cerr << "Failed to link the shader program!\n";
-    std::cerr << "Error: " << infoLog << '\n';
-  }
+    "resources/Shaders/default.vert",
+    "resources/Shaders/default.frag"
+  };
 
   // VAO, VBO, and EBO
   GLuint VAO;
@@ -159,7 +109,7 @@ int main()
   {
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT);
-    glUseProgram(shaderProgram);
+    defaultShader.Use();
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, NULL);
     glfwSwapBuffers(window);
@@ -169,6 +119,7 @@ int main()
   glDeleteVertexArrays(1, &VAO);
   glDeleteBuffers(1, &VBO);
   glDeleteBuffers(1, &EBO);
+  defaultShader.Delete();
   glfwDestroyWindow(window);
   glfwTerminate();
   return EXIT_SUCCESS;

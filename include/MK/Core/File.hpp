@@ -8,6 +8,10 @@
 
 namespace mk
 {
+  /**
+   * @brief Namespace for file-related functionality of the MK Engine.
+   * @namespace File
+   */
   namespace File
   {
     /**

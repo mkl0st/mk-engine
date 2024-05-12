@@ -36,6 +36,11 @@ namespace mk
      * @brief The minor version of OpenGL supported by the MK Engine.
      */
     constexpr unsigned int GL_MINOR_VER {3};
+
+    /**
+     * @brief The size of the info log buffer used for OpenGL error messages.
+     */
+    constexpr unsigned int INFO_LOG_SIZE {512u};
   }
 }
 
