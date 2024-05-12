@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <string>
+#include <array>
 
 #include "Core/Constants.hpp"
 #include "Core/File.hpp"
@@ -40,6 +41,46 @@ namespace mk
          */
         void Delete()
         { glDeleteProgram(this->ID); }
+
+      private:
+        GLuint ID {0};
+    };
+
+    /**
+     * @brief A class representing a Vertex Buffer Object (VBO) in OpenGL.
+     */
+    class VBO
+    {
+      public:
+        /**
+         * @brief Constructs a VBO object with the specified vertex data.
+         * @tparam size The size of the vertex data array.
+         * @param vertices The array containing the vertex data.
+         */
+        template<std::size_t size>
+        VBO(const std::array<GLfloat, size>& vertices)
+        {
+          glGenBuffers(1, &this->ID);
+          glBindBuffer(GL_ARRAY_BUFFER, this->ID);
+          glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+          glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
+
+        /**
+         * @brief Binds the VBO.
+         */
+        void Bind()
+        { glBindBuffer(GL_ARRAY_BUFFER, this->ID); }
+        /**
+         * @brief Unbinds the VBO.
+         */
+        void Unbind()
+        { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+        /**
+         * @brief Deletes the VBO.
+         */
+        void Delete()
+        { glDeleteBuffers(1, &this->ID); }
 
       private:
         GLuint ID {0};
