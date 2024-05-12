@@ -76,22 +76,18 @@ int main()
   };
 
   // VAO, VBO, and EBO
-  GLuint VAO;
+  mk::Graphics::VAO VAO;
   mk::Graphics::VBO VBO {vertices};
   mk::Graphics::EBO EBO {indices};
 
-  glGenVertexArrays(1, &VAO);
-
-  glBindVertexArray(VAO);
+  VAO.Bind();
   VBO.Bind();
   EBO.Bind();
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-  glEnableVertexAttribArray(1);
+  VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)0);
+  VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
-  glBindVertexArray(0);
+  VAO.Unbind();
   VBO.Unbind();
   EBO.Unbind();
 
@@ -106,13 +102,13 @@ int main()
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT);
     defaultShader.Use();
-    glBindVertexArray(VAO);
+    VAO.Bind();
     glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, NULL);
     glfwSwapBuffers(window);
   }
 
   // Program Termination
-  glDeleteVertexArrays(1, &VAO);
+  VAO.Delete();
   VBO.Delete();
   EBO.Delete();
   defaultShader.Delete();

@@ -56,3 +56,11 @@ mk::Graphics::Shader::Shader(const std::string& vertexPath, const std::string& f
     std::cerr << "Error: " << infoLog << '\n';
   }
 }
+
+void mk::Graphics::VAO::LinkAttrib(const mk::Graphics::VBO& VBO, GLuint layout, GLuint size, GLenum type, GLsizeiptr stride, const void* offset) const
+{
+  VBO.Bind();
+  glVertexAttribPointer(layout, size, type, GL_FALSE, stride, offset);
+  glEnableVertexAttribArray(layout);
+  VBO.Unbind();
+}
