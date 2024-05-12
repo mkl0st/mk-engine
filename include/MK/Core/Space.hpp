@@ -451,6 +451,64 @@ namespace mk
         vecOne.x * vecTwo.y - vecOne.y * vecTwo.x,
       };
     };
+
+    /**
+     * @brief A class representing a 4x4 matrix.
+     */
+    class Mat4
+    {
+      public:
+        /**
+         * @brief Default constructor.
+         * Initializes the matrix to be a 4x4 matrix with all elements set to 0.
+         */
+        Mat4()
+        {
+          for (int y = 0; y < 4; y++)
+            for (int x = 0; x < 4; x++)
+              elements[y][x] = 0.f;
+        }
+        /**
+         * @brief Constructor with a diagonal value.
+         * Initializes the matrix to be a 4x4 matrix with diagonal elements set to the specified value
+         * and all other elements set to 0.
+         * @param diagonalValue The value to set the diagonal elements to.
+         */
+        Mat4(const float diagonalValue)
+        {
+          for (int y = 0; y < 4; y++)
+            for (int x = 0; x < 4; x++)
+              elements[y][x] = x == y ? diagonalValue : 0.f;
+        }
+
+        /**
+         * @brief Overloaded subscript operator.
+         * Allows access to the elements of the matrix.
+         * @param index The row index.
+         * @return A pointer to the array of elements in the specified row.
+         */
+        float* operator[](int index)
+        { return elements[index]; }
+        /**
+         * @brief Overloaded const subscript operator.
+         * Allows read-only access to the elements of the matrix.
+         * @param index The row index.
+         * @return A const pointer to the array of elements in the specified row.
+         */
+        const float* operator[](int index) const
+        { return elements[index]; }
+
+      private:
+        float elements[4][4];
+    };
+
+    /**
+     * @brief Retrieves a pointer to the raw data of a 4x4 matrix.
+     * @param mat The 4x4 matrix.
+     * @return A const pointer to the raw data of the matrix.
+     */
+    inline const float* valuePointer(const mk::Space::Mat4& mat)
+    { return &mat[0][0]; }
   }
 }
 

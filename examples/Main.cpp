@@ -90,11 +90,6 @@ int main()
   // Line Mode
   mk::Graphics::useLineMode();
 
-  // Vector Testing
-  mk::Space::Vec3 vecOne {1.f, 2.f, -2.f};
-  mk::Space::Vec3 vecTwo {4.f, -5.f, 3.f};
-  mk::Debug::printVector(mk::Space::cross(vecOne, vecTwo));
-
   // Main Loop
   while (window.isOpen())
   {
@@ -102,6 +97,19 @@ int main()
     window.clear();
     defaultShader.Use();
     VAO.Bind();
+
+    mk::Space::Mat4 model {1.f};
+    mk::Space::Mat4 view {1.f};
+    mk::Space::Mat4 projection {1.f};
+
+    GLuint modelLoc = glGetUniformLocation(defaultShader.getID(), "model");
+    GLuint viewLoc = glGetUniformLocation(defaultShader.getID(), "view");
+    GLuint projectionLoc = glGetUniformLocation(defaultShader.getID(), "projection");
+
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, mk::Space::valuePointer(model));
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, mk::Space::valuePointer(view));
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, mk::Space::valuePointer(projection));
+
     glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, NULL);
     window.render();
   }

@@ -22,6 +22,13 @@ namespace mk
         Shader(const std::string& vertexPath, const std::string& fragmentPath);
 
         /**
+         * @brief Retrieves the ID of the shader program.
+         * @return The ID of the shader program.
+         */
+        GLuint getID() const
+        { return ID; }
+
+        /**
          * @brief Activates the shader program.
          */
         void Use() const
@@ -55,6 +62,13 @@ namespace mk
           glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
           glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
+
+        /**
+         * @brief Retrieves the ID of the VBO.
+         * @return The ID of the VBO.
+         */
+        GLuint getID() const
+        { return ID; }
 
         /**
          * @brief Binds the VBO.
@@ -97,6 +111,13 @@ namespace mk
         }
 
         /**
+         * @brief Retrieves the ID of the EBO.
+         * @return The ID of the EBO.
+         */
+        GLuint getID() const
+        { return ID; }
+
+        /**
          * @brief Binds the EBO.
          */
         void Bind() const
@@ -127,6 +148,13 @@ namespace mk
          */
         VAO()
         { glGenVertexArrays(1, &this->ID); };
+
+        /**
+         * @brief Retrieves the ID of the VAO.
+         * @return The ID of the VAO.
+         */
+        GLuint getID() const
+        { return ID; }
 
         /**
          * @brief Binds the VAO.
