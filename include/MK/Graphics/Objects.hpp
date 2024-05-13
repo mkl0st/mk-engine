@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 #include <string>
 
+#include <MK/Core/Space.hpp>
+
 namespace mk
 {
   namespace Graphics
@@ -16,7 +18,7 @@ namespace mk
       public:
         /**
          * @brief Constructs a Shader object from vertex and fragment shader files.
-         * @param vertexPath   The file path to the vertex shader source code.
+         * @param vertexPath The file path to the vertex shader source code.
          * @param fragmentPath The file path to the fragment shader source code.
          */
         Shader(const std::string& vertexPath, const std::string& fragmentPath);
@@ -27,6 +29,17 @@ namespace mk
          */
         GLuint getID() const
         { return ID; }
+
+        /**
+         * @brief Sets a 4x4 matrix uniform in the shader program.
+         * @param uniform The name of the uniform variable in the shader.
+         * @param mat The 4x4 matrix to set.
+         */
+        void SetMat4(const std::string& uniform, const mk::Space::Mat4& mat) const
+        {
+          GLuint matLoc = glGetUniformLocation(ID, uniform.c_str());
+          glUniformMatrix4fv(matLoc, 1, GL_FALSE, mk::Space::valuePointer(mat));
+        }
 
         /**
          * @brief Activates the shader program.

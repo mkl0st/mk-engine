@@ -6,6 +6,22 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
   glViewport(0, 0, width, height);
 }
 
+const std::array<GLuint, 9> rectangleIndices =
+{
+  0, 1, 3,
+  0, 3, 2,
+};
+
+std::array<GLfloat, 4 * 6> generateRectangleVertices(const float width, const float height)
+{
+  return {
+    0.f,   height, 0.f, 1.f, 1.f, 1.f,
+    width, height, 0.f, 1.f, 1.f, 1.f,
+    0.f,   0.0f,   0.f, 1.f, 1.f, 1.f,
+    width, 0.0f,   0.f, 1.f, 1.f, 1.f,
+  };
+}
+
 mk::Graphics::Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {
   // Shaders
@@ -99,7 +115,33 @@ void mk::Window::clear()
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void mk::Window::draw(const mk::Shapes::Shape& shape)
+{
+  shape.getVAO()->Bind();
+  glDrawElements(GL_TRIANGLES, shape.getIndexCount(), GL_UNSIGNED_INT, NULL);
+  shape.getVAO()->Unbind();
+}
+
 void mk::Window::render()
 {
   glfwSwapBuffers(glfwInstance);
+}
+
+mk::Shapes::Rectangle::Rectangle(const mk::Space::Vec2& position, const float width, const float height)
+: mk::Shapes::Shape(position, 6)
+{
+  VAO = new mk::Graphics::VAO();
+  VBO = new mk::Graphics::VBO(generateRectangleVertices(width, height));
+  EBO = new mk::Graphics::EBO(rectangleIndices);
+
+  VAO->Bind();
+  VBO->Bind();
+  EBO->Bind();
+
+  VAO->LinkAttrib(*VBO, 0, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)0);
+  VAO->LinkAttrib(*VBO, 1, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+
+  VAO->Unbind();
+  VBO->Unbind();
+  EBO->Unbind();
 }
