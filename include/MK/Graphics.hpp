@@ -9,6 +9,7 @@
 #include "Core/Constants.hpp"
 #include "Core/Setup.hpp"
 #include "Core/File.hpp"
+#include "Core/Input.hpp"
 #include "Graphics/Color.hpp"
 #include "Graphics/Objects.hpp"
 #include "Graphics/Window.hpp"

@@ -9,6 +9,7 @@
 #include "Core/Setup.hpp"
 #include "Core/File.hpp"
 #include "Core/Space.hpp"
+#include "Core/Input.hpp"
 #include "Core/Debug.hpp"
 
 namespace mk

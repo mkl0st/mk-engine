@@ -64,6 +64,14 @@ namespace mk
       { return !glfwWindowShouldClose(this->glfwInstance); };
 
       /**
+       * @brief Checks if a specific key is currently pressed.
+       * @param key The key to check.
+       * @return True if the key is pressed, false otherwise.
+       */
+      bool isKeyPressed(const mk::Input::Key& key) const
+      { return glfwGetKey(this->glfwInstance, key) == GLFW_PRESS; }
+
+      /**
        * @brief Updates the window.
        */
       void update();

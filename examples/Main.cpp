@@ -49,6 +49,7 @@ int main()
     mk::Core::terminate();
     return EXIT_FAILURE;
   }
+  glPointSize(5.f);
 
   // Clear Color
   mk::Color::RGBA clearColor {0, 0, 0, 1.f};
@@ -83,6 +84,14 @@ int main()
   while (window.isOpen())
   {
     window.update();
+
+    if (window.isKeyPressed(mk::Input::Key::C))
+      mk::Graphics::usePointMode();
+    else if (window.isKeyPressed(mk::Input::Key::V))
+      mk::Graphics::useLineMode();
+    else if (window.isKeyPressed(mk::Input::Key::B))
+      mk::Graphics::useFillMode();
+
     window.clear();
     defaultShader.Use();
 
