@@ -509,6 +509,24 @@ namespace mk
      */
     inline const float* valuePointer(const mk::Space::Mat4& mat)
     { return &mat[0][0]; }
+    /**
+     * @brief Translates a 4x4 matrix by a 3D vector.
+     * @param mat The original 4x4 matrix.
+     * @param vec The translation vector.
+     * @return The translated 4x4 matrix.
+     */
+    mk::Space::Mat4 translate(mk::Space::Mat4 mat, const mk::Space::Vec3& vec);
+    /**
+     * @brief Creates an orthographic projection matrix.
+     * @param left The coordinate of the left vertical clipping plane.
+     * @param right The coordinate of the right vertical clipping plane.
+     * @param top The coordinate of the top horizontal clipping plane.
+     * @param bottom The coordinate of the bottom horizontal clipping plane.
+     * @param zNear The distance to the near clipping plane.
+     * @param zFar The distance to the far clipping plane.
+     * @return The orthographic projection matrix.
+     */
+    mk::Space::Mat4 ortho(const float left, const float right, const float top, const float bottom, const float zNear, const float zFar);
   }
 }
 

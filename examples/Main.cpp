@@ -88,7 +88,14 @@ int main()
 
     mk::Space::Mat4 model {1.f};
     mk::Space::Mat4 view {1.f};
-    mk::Space::Mat4 projection {1.f};
+    mk::Space::Mat4 projection = mk::Space::ortho(
+      0,
+      (float)WINDOW_WIDTH,
+      0,
+      (float)WINDOW_HEIGHT,
+      -1.f,
+      1.f
+    );
 
     defaultShader.SetMat4("model", model);
     defaultShader.SetMat4("view", view);
