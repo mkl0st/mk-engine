@@ -105,9 +105,17 @@ void mk::Window::_initialize()
   glfwSetFramebufferSizeCallback(glfwInstance, framebufferSizeCallback);
 }
 
+void mk::Window::_updateDeltaTime()
+{
+  float currentTime = (float)glfwGetTime();
+  deltaTime = currentTime - lastTime;
+  lastTime = currentTime;
+}
+
 void mk::Window::update()
 {
   glfwPollEvents();
+  _updateDeltaTime();
 }
 
 void mk::Window::clear()

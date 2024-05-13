@@ -48,6 +48,18 @@ namespace mk
        */
       std::string getTitle() const
       { return title; }
+      /**
+       * @brief Gets the time taken to render the last frame.
+       * @return The time taken to render the last frame, in seconds.
+       */
+      float getDeltaTime() const
+      { return deltaTime; }
+      /**
+       * @brief Gets the frames per second (FPS) of the rendering.
+       * @return The frames per second (FPS) of the rendering. If delta time is zero, returns zero.
+       */
+      float getFPS() const
+      { return deltaTime > 0.f ? 1.f / deltaTime : 0.f; }
 
       /**
        * @brief Sets the title of the window.
@@ -96,11 +108,19 @@ namespace mk
 
       GLFWwindow* glfwInstance {nullptr};
 
+      float deltaTime {0.f};
+      float lastTime  {(float)glfwGetTime()};
+
       /**
        * @brief Initializes the window.
        * This function creates the GLFW window instance.
        */
       void _initialize();
+      /**
+       * @brief Updates the time taken to render the last frame.
+       * This function calculates and updates the delta time.
+       */
+      void _updateDeltaTime();
   };
 }
 
