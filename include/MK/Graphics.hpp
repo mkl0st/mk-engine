@@ -13,6 +13,7 @@
 #include "Graphics/Color.hpp"
 #include "Graphics/Objects.hpp"
 #include "Graphics/Window.hpp"
+#include "Graphics/Render.hpp"
 #include "Graphics/Shapes.hpp"
 
 namespace mk

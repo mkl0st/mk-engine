@@ -63,6 +63,9 @@ int main()
   std::cout << '\n';
   mk::Core::printVersionInfo();
 
+  // Renderers
+  mk::Render::Renderer shapeRenderer {defaultShader};
+
   // Main Loop
   while (window.isOpen())
   {
@@ -78,7 +81,6 @@ int main()
     window.clear();
     defaultShader.Use();
 
-    mk::Space::Mat4 model {1.f};
     mk::Space::Mat4 view {1.f};
     mk::Space::Mat4 projection = mk::Space::ortho(
       0,
@@ -89,12 +91,11 @@ int main()
       1.f
     );
 
-    defaultShader.SetMat4("model", model);
     defaultShader.SetMat4("view", view);
     defaultShader.SetMat4("projection", projection);
 
-    window.draw(rect, defaultShader);
-    window.render();
+    shapeRenderer.render(rect);
+    window.display();
   }
 
   // Program Termination

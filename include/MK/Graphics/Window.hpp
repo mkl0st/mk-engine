@@ -92,15 +92,9 @@ namespace mk
        */
       void clear();
       /**
-       * @brief Draws a shape on the window.
-       * @param shape The shape to be drawn.
-       * @param shader The shader to be used for drawing.
+       * @brief Displays the contents of the window.
        */
-      void draw(const mk::Shapes::Shape& shape, const mk::Graphics::Shader& shader);
-      /**
-       * @brief Render the contents of the window.
-       */
-      void render();
+      void display();
 
     private:
       unsigned int width  {800u};

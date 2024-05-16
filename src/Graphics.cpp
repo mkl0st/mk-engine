@@ -123,7 +123,12 @@ void mk::Window::clear()
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void mk::Window::draw(const mk::Shapes::Shape& shape, const mk::Graphics::Shader& shader)
+void mk::Window::display()
+{
+  glfwSwapBuffers(glfwInstance);
+}
+
+void mk::Render::Renderer::render(const mk::Shapes::Shape& shape)
 {
   mk::Space::Mat4 model = mk::Space::translate(
     {1.f},
@@ -134,11 +139,6 @@ void mk::Window::draw(const mk::Shapes::Shape& shape, const mk::Graphics::Shader
   shader.SetMat4("model", model);
   glDrawElements(GL_TRIANGLES, shape.getIndexCount(), GL_UNSIGNED_INT, NULL);
   shape.getVAO()->Unbind();
-}
-
-void mk::Window::render()
-{
-  glfwSwapBuffers(glfwInstance);
 }
 
 mk::Shapes::Rectangle::Rectangle(const mk::Space::Vec2& position, const float width, const float height)
