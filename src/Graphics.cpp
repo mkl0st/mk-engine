@@ -6,6 +6,22 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
   glViewport(0, 0, width, height);
 }
 
+const std::array<GLuint, 6> rectangleIndices =
+{
+  0, 1, 3,
+  0, 3, 2,
+};
+
+std::array<GLfloat, 4 * 3> generateRectangleVertices(const float width, const float height)
+{
+  return {
+    0.f,   height, 0.f,
+    width, height, 0.f,
+    0.f,   0.0f,   0.f,
+    width, 0.0f,   0.f,
+  };
+}
+
 mk::Graphics::Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {
   // Shaders
@@ -87,11 +103,25 @@ void mk::Window::_initialize()
   }
   glfwMakeContextCurrent(glfwInstance);
   glfwSetFramebufferSizeCallback(glfwInstance, framebufferSizeCallback);
+  glClearColor(
+    clearColor.red,
+    clearColor.green,
+    clearColor.blue,
+    clearColor.alpha
+  );
+}
+
+void mk::Window::_updateDeltaTime()
+{
+  float currentTime = (float)glfwGetTime();
+  deltaTime = currentTime - lastTime;
+  lastTime = currentTime;
 }
 
 void mk::Window::update()
 {
   glfwPollEvents();
+  _updateDeltaTime();
 }
 
 void mk::Window::clear()
@@ -99,7 +129,54 @@ void mk::Window::clear()
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void mk::Window::render()
+void mk::Window::display()
 {
   glfwSwapBuffers(glfwInstance);
+}
+
+void mk::Render::Renderer::render(const mk::Shapes::Shape& shape)
+{
+  mk::Space::Mat4 model = mk::Space::translate(
+    {1.f},
+    shape.getPosition()
+  );
+
+  shape.getVAO()->Bind();
+  shader.SetMat4("model", model);
+  shader.SetVec3("fillColor", shape.getFillColor().toRGBVec());
+  glDrawElements(GL_TRIANGLES, shape.getIndexCount(), GL_UNSIGNED_INT, NULL);
+  shape.getVAO()->Unbind();
+}
+
+mk::Shapes::Rectangle::Rectangle(const mk::Space::Vec2& position, const float width, const float height)
+: mk::Shapes::Shape(position, 6), width(width), height(height)
+{
+  VAO = new mk::Graphics::VAO();
+  VBO = new mk::Graphics::VBO(generateRectangleVertices(width, height));
+  EBO = new mk::Graphics::EBO(rectangleIndices);
+
+  VAO->Bind();
+  VBO->Bind();
+  EBO->Bind();
+
+  VAO->LinkAttrib(*VBO, 0, 3, GL_FLOAT, 3 * sizeof(GLfloat), (void*)0);
+
+  VAO->Unbind();
+  VBO->Unbind();
+  EBO->Unbind();
+}
+
+void mk::Camera2D::updateMatrix()
+{
+  mk::Space::Mat4 view {1.f};
+  mk::Space::Mat4 projection = mk::Space::ortho(
+    0,
+    (float)bufferDimensions.x,
+    0,
+    (float)bufferDimensions.y,
+    -1.f,
+    1.f
+  );
+
+  matrix = projection * view;
 }

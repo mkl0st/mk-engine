@@ -1,34 +1,15 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <iostream>
-#include <array>
+#include <vector>
 #include <string>
 
 #include <MK/Core.hpp>
 #include <MK/Graphics.hpp>
 
 // Window Settings
-constexpr unsigned int WINDOW_WIDTH  {800u};
-constexpr unsigned int WINDOW_HEIGHT {600u};
+constexpr unsigned int WINDOW_WIDTH  {400u};
+constexpr unsigned int WINDOW_HEIGHT {400u};
 const     std::string  WINDOW_TITLE  {"MK Engine"};
-
-// Vertices and Indices
-const std::array<GLfloat, 6 * 6> vertices =
-{
-  -0.5f,  -0.5f, 0.f, 1.f, 1.f, 1.f,
-   0.0f,  -0.5f, 0.f, 1.f, 1.f, 1.f,
-   0.5f,  -0.5f, 0.f, 1.f, 1.f, 1.f,
-  -0.25f,  0.0f, 0.f, 1.f, 1.f, 1.f,
-   0.25f,  0.0f, 0.f, 1.f, 1.f, 1.f,
-   0.0f,   0.5f, 0.f, 1.f, 1.f, 1.f,
-};
-const std::array<GLuint, 9> indices =
-{
-  0, 1, 3,
-  1, 2, 4,
-  3, 4, 5,
-};
 
 int main()
 {
@@ -49,15 +30,10 @@ int main()
     mk::Core::terminate();
     return EXIT_FAILURE;
   }
+  glPointSize(3.f);
 
   // Clear Color
-  mk::Color::RGBA clearColor {0, 0, 0, 1.f};
-  glClearColor(
-    clearColor.red,
-    clearColor.green,
-    clearColor.blue,
-    clearColor.alpha
-  );
+  mk::Color::RGBA clearColor {mk::Color::Black};
 
   // Shader Program
   mk::Graphics::Shader defaultShader
@@ -66,45 +42,62 @@ int main()
     "resources/Shaders/default.frag"
   };
 
-  // VAO, VBO, and EBO
-  mk::Graphics::VAO VAO;
-  mk::Graphics::VBO VBO {vertices};
-  mk::Graphics::EBO EBO {indices};
-
-  VAO.Bind();
-  VBO.Bind();
-  EBO.Bind();
-
-  VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)0);
-  VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-
-  VAO.Unbind();
-  VBO.Unbind();
-  EBO.Unbind();
+  // Rectangle
+  std::vector<mk::Shapes::Rectangle> rectangles;
+  for (int y = 0; y < 8; y++)
+    for (int x = 0; x < 8; x++)
+    {
+      rectangles.emplace_back(mk::Shapes::Rectangle(
+        {x * 50.f, y * 50.f},
+        50.f,
+        50.f
+      ));
+      rectangles.back().setFillColor(
+        ((y % 2 ? 0 : 1) + x) % 2 ? mk::Color::RGBA(237, 183, 173, 1.f) : mk::Color::RGBA(199, 81, 60, 1.f)
+      );
+    }
 
   // Printing Engine and Version Info
   mk::Core::printEngineInfo();
   std::cout << '\n';
   mk::Core::printVersionInfo();
 
-  // Line Mode
-  mk::Graphics::useLineMode();
+  // Renderers
+  mk::Render::Renderer shapeRenderer {defaultShader};
+
+  // Camera
+  mk::Camera2D camera
+  {
+    window.getBufferDimensions(),
+    -1.f,
+    1.f
+  };
 
   // Main Loop
   while (window.isOpen())
   {
     window.update();
+
+    if (window.isKeyPressed(mk::Input::Key::C))
+      mk::Graphics::usePointMode();
+    else if (window.isKeyPressed(mk::Input::Key::V))
+      mk::Graphics::useLineMode();
+    else if (window.isKeyPressed(mk::Input::Key::B))
+      mk::Graphics::useFillMode();
+
     window.clear();
     defaultShader.Use();
-    VAO.Bind();
-    glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, NULL);
-    window.render();
+
+    camera.updateMatrix();
+    camera.applyMatrix(defaultShader);
+
+    for (const auto& rectangle : rectangles)
+      shapeRenderer.render(rectangle);
+
+    window.display();
   }
 
   // Program Termination
-  VAO.Delete();
-  VBO.Delete();
-  EBO.Delete();
   defaultShader.Delete();
   mk::Core::terminate();
   return EXIT_SUCCESS;

@@ -53,3 +53,32 @@ std::string mk::File::getContents(const std::string& path)
   buffer << file.rdbuf();
   return buffer.str();
 }
+
+mk::Space::Mat4 mk::Space::translate(mk::Space::Mat4 mat, const mk::Space::Vec2& vec)
+{
+  mat[3][0] = vec.x;
+  mat[3][1] = vec.y;
+  return mat;
+}
+
+mk::Space::Mat4 mk::Space::translate(mk::Space::Mat4 mat, const mk::Space::Vec3& vec)
+{
+  mat[3][0] = vec.x;
+  mat[3][1] = vec.y;
+  mat[3][2] = vec.z;
+  return mat;
+}
+
+mk::Space::Mat4 mk::Space::ortho(const float left, const float right, const float top, const float bottom, const float zNear, const float zFar)
+{
+  mk::Space::Mat4 result {1.f};
+
+  result[0][0] = 2.f / (right - left);
+  result[1][1] = 2.f / (top - bottom);
+  result[2][2] = 2.f / (zFar - zNear);
+  result[3][0] = -(right + left) / (right - left);
+  result[3][1] = -(top + bottom) / (top - bottom);
+  result[3][2] = -(zFar + zNear) / (zFar - zNear);
+
+  return result;
+}
