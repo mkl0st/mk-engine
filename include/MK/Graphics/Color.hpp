@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <MK/Core/Space.hpp>
+
 namespace mk
 {
   /**
@@ -11,6 +13,9 @@ namespace mk
    */
   namespace Color
   {
+    /**
+     * @brief Represents an RGBA color with floating-point precision.
+     */
     struct RGBA
     {
       float red;
@@ -33,6 +38,13 @@ namespace mk
         const float alpha
       ) : red(red / 255.f), green(green / 255.f), blue(blue / 255.f), alpha(alpha)
       {}
+
+      /**
+       * @brief Converts RGBA color to RGB vector.
+       * @return A 3D vector representing the RGB components of the color.
+       */
+      mk::Space::Vec3 toRGBVec() const
+      { return {red, green, blue}; }
     };
 
     /**

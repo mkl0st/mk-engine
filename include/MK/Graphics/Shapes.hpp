@@ -3,6 +3,7 @@
 
 #include <MK/Core/Space.hpp>
 
+#include "Color.hpp"
 #include "Objects.hpp"
 
 namespace mk
@@ -95,6 +96,12 @@ namespace mk
          */
         const mk::Graphics::EBO* getEBO() const
         { return EBO; }
+        /**
+         * @brief Retrieves the fill color of the shape.
+         * @return The fill color of the shape.
+         */
+        mk::Color::RGBA getFillColor() const
+        { return fillColor; }
 
         /**
          * @brief Sets the position of the shape.
@@ -102,6 +109,12 @@ namespace mk
          */
         void setPosition(const mk::Space::Vec2& position)
         { this->position = position; }
+        /**
+         * @brief Sets the fill color of the shape.
+         * @param fillColor The new fill color of the shape.
+         */
+        void setFillColor(const mk::Color::RGBA& fillColor)
+        { this->fillColor = fillColor; }
 
         /**
          * @brief Moves the shape along the X-axis by the specified amount.
@@ -129,6 +142,8 @@ namespace mk
         mk::Graphics::VAO* VAO {nullptr};
         mk::Graphics::VBO* VBO {nullptr};
         mk::Graphics::EBO* EBO {nullptr};
+
+        mk::Color::RGBA fillColor {mk::Color::White};
     };
 
     /**

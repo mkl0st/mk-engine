@@ -31,6 +31,16 @@ namespace mk
         { return ID; }
 
         /**
+         * @brief Sets a 3-component vector uniform in the shader program.
+         * @param uniform The name of the uniform variable in the shader.
+         * @param vec The 3-component vector to set.
+         */
+        void SetVec3(const std::string& uniform, const mk::Space::Vec3& vec) const
+        {
+          GLuint vecLoc = glGetUniformLocation(ID, uniform.c_str());
+          glUniform3f(vecLoc, vec.x, vec.y, vec.z);
+        }
+        /**
          * @brief Sets a 4x4 matrix uniform in the shader program.
          * @param uniform The name of the uniform variable in the shader.
          * @param mat The 4x4 matrix to set.
