@@ -497,6 +497,24 @@ namespace mk
          */
         const float* operator[](int index) const
         { return elements[index]; }
+        /**
+         * @brief Overloaded multiplication operator for matrix multiplication.
+         * Multiplies this matrix by another matrix.
+         * @param other The matrix to multiply with.
+         * @return The resulting matrix after multiplication.
+         */
+        mk::Space::Mat4 operator*(const mk::Space::Mat4& mat)
+        {
+          mk::Space::Mat4 result;
+          for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+            {
+              result[i][j] = 0.f;
+              for (int k = 0; k < 4; k++)
+                result[i][j] += elements[i][k] * mat[k][j];
+            }
+          return result;
+        }
 
       private:
         float elements[4][4];

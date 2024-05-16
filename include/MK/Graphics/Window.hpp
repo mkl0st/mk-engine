@@ -43,6 +43,18 @@ namespace mk
       unsigned int getHeight() const
       { return height; }
       /**
+       * @brief Gets the buffer dimensions of the window.
+       * @return The buffer dimensions as a 2D vector.
+       */
+      mk::Space::Vec2 getBufferDimensions() const
+      {
+        return
+        {
+          (float)width,
+          (float)height,
+        };
+      }
+      /**
        * @brief Gets the title of the window.
        * @return The title of the window.
        */

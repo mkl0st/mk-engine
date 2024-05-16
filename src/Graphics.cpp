@@ -159,3 +159,18 @@ mk::Shapes::Rectangle::Rectangle(const mk::Space::Vec2& position, const float wi
   VBO->Unbind();
   EBO->Unbind();
 }
+
+void mk::Camera2D::updateMatrix()
+{
+  mk::Space::Mat4 view {1.f};
+  mk::Space::Mat4 projection = mk::Space::ortho(
+    0,
+    (float)bufferDimensions.x,
+    0,
+    (float)bufferDimensions.y,
+    -1.f,
+    1.f
+  );
+
+  matrix = projection * view;
+}

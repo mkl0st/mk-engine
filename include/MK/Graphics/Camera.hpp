@@ -62,18 +62,44 @@ namespace mk
       { this->zFar = zFar; }
 
       /**
+       * @brief Updates the camera matrix.
+       */
+      virtual void updateMatrix() = 0;
+      /**
        * @brief Applies the camera matrix to a shader.
        * @param shader The shader to which the camera matrix will be applied.
        */
       void applyMatrix(const mk::Graphics::Shader& shader)
       { shader.SetMat4("cameraMatrix", matrix); }
 
-    private:
+    protected:
       mk::Space::Vec2 bufferDimensions {0.f};
       float zNear {0.f};
       float zFar {0.f};
 
       mk::Space::Mat4 matrix {1.f};
+  };
+
+  /**
+   * @brief A 2D camera class in the MK Engine.
+   */
+  class Camera2D : public Camera
+  {
+    public:
+      /**
+       * @brief Constructs a 2D camera with the specified buffer dimensions, near clipping plane, and far clipping plane.
+       * @param bufferDimensions The dimensions of the camera buffer.
+       * @param zNear The distance to the near clipping plane.
+       * @param zFar The distance to the far clipping plane.
+       */
+      Camera2D(const mk::Space::Vec2& bufferDimensions, const float zNear, const float zFar)
+      : mk::Camera(bufferDimensions, zNear, zFar)
+      {}
+
+      /**
+       * @brief Updates the camera matrix for 2D rendering.
+       */
+      void updateMatrix() override;
   };
 }
 

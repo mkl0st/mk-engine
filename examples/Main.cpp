@@ -66,6 +66,14 @@ int main()
   // Renderers
   mk::Render::Renderer shapeRenderer {defaultShader};
 
+  // Camera
+  mk::Camera2D camera
+  {
+    window.getBufferDimensions(),
+    -1.f,
+    1.f
+  };
+
   // Main Loop
   while (window.isOpen())
   {
@@ -81,18 +89,8 @@ int main()
     window.clear();
     defaultShader.Use();
 
-    mk::Space::Mat4 view {1.f};
-    mk::Space::Mat4 projection = mk::Space::ortho(
-      0,
-      (float)WINDOW_WIDTH,
-      0,
-      (float)WINDOW_HEIGHT,
-      -1.f,
-      1.f
-    );
-
-    defaultShader.SetMat4("view", view);
-    defaultShader.SetMat4("projection", projection);
+    camera.updateMatrix();
+    camera.applyMatrix(defaultShader);
 
     shapeRenderer.render(rect);
     window.display();
