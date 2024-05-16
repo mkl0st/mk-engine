@@ -1,13 +1,14 @@
 #include <stdlib.h>
 #include <iostream>
+#include <vector>
 #include <string>
 
 #include <MK/Core.hpp>
 #include <MK/Graphics.hpp>
 
 // Window Settings
-constexpr unsigned int WINDOW_WIDTH  {800u};
-constexpr unsigned int WINDOW_HEIGHT {600u};
+constexpr unsigned int WINDOW_WIDTH  {400u};
+constexpr unsigned int WINDOW_HEIGHT {400u};
 const     std::string  WINDOW_TITLE  {"MK Engine"};
 
 int main()
@@ -29,7 +30,7 @@ int main()
     mk::Core::terminate();
     return EXIT_FAILURE;
   }
-  glPointSize(5.f);
+  glPointSize(3.f);
 
   // Clear Color
   mk::Color::RGBA clearColor {mk::Color::Black};
@@ -42,12 +43,19 @@ int main()
   };
 
   // Rectangle
-  mk::Shapes::Rectangle rect
-  {
-    {32.f, 32.f},
-    32.f,
-    32.f,
-  };
+  std::vector<mk::Shapes::Rectangle> rectangles;
+  for (int y = 0; y < 8; y++)
+    for (int x = 0; x < 8; x++)
+    {
+      rectangles.emplace_back(mk::Shapes::Rectangle(
+        {x * 50.f, y * 50.f},
+        50.f,
+        50.f
+      ));
+      rectangles.back().setFillColor(
+        ((y % 2 ? 0 : 1) + x) % 2 ? mk::Color::RGBA(237, 183, 173, 1.f) : mk::Color::RGBA(199, 81, 60, 1.f)
+      );
+    }
 
   // Printing Engine and Version Info
   mk::Core::printEngineInfo();
@@ -77,27 +85,15 @@ int main()
     else if (window.isKeyPressed(mk::Input::Key::B))
       mk::Graphics::useFillMode();
 
-    float xFactor {0.f};
-    float yFactor {0.f};
-
-    if (window.isKeyPressed(mk::Input::Key::W))
-      yFactor -= 1.f;
-    if (window.isKeyPressed(mk::Input::Key::S))
-      yFactor += 1.f;
-    if (window.isKeyPressed(mk::Input::Key::A))
-      xFactor -= 1.f;
-    if (window.isKeyPressed(mk::Input::Key::D))
-      xFactor += 1.f;
-
-    rect.move(mk::Space::normalize({xFactor, yFactor}) * window.getDeltaTime() * 100.f);
-
     window.clear();
     defaultShader.Use();
 
     camera.updateMatrix();
     camera.applyMatrix(defaultShader);
 
-    shapeRenderer.render(rect);
+    for (const auto& rectangle : rectangles)
+      shapeRenderer.render(rectangle);
+
     window.display();
   }
 

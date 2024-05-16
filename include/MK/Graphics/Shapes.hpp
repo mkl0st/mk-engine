@@ -56,9 +56,85 @@ namespace mk
          */
         virtual ~Shape()
         {
-          VAO->Delete();
-          VBO->Delete();
-          EBO->Delete();
+          if (VAO != nullptr) VAO->Delete();
+          if (VBO != nullptr) VBO->Delete();
+          if (EBO != nullptr) EBO->Delete();
+        }
+        /**
+         * @brief Move constructor.
+         * Moves resources from the source shape.
+         */
+        Shape(mk::Shapes::Shape&& other) noexcept
+        : position(other.position), indexCount(other.indexCount), fillColor(other.fillColor), VAO(other.VAO), VBO(other.VBO), EBO(other.EBO)
+        {
+          other.VAO = nullptr;
+          other.VBO = nullptr;
+          other.EBO = nullptr;
+          other.indexCount = 0;
+          other.position = {0.f};
+          other.fillColor = mk::Color::White;
+        }
+        /**
+         * @brief Copy constructor.
+         * Copies resources from the source shape.
+         */
+        Shape(const mk::Shapes::Shape& other) noexcept
+        : position(other.position), indexCount(other.indexCount), fillColor(other.fillColor)
+        {
+          if (other.VAO != nullptr) VAO = other.VAO;
+          if (other.VBO != nullptr) VBO = other.VBO;
+          if (other.EBO != nullptr) EBO = other.EBO;
+        }
+        /**
+         * @brief Move assignment operator.
+         * Moves resources from the source shape.
+         */
+        mk::Shapes::Shape& operator=(mk::Shapes::Shape&& other) noexcept
+        {
+          if (this != &other)
+          {
+            if (VAO != nullptr) VAO->Delete();
+            if (VBO != nullptr) VBO->Delete();
+            if (EBO != nullptr) EBO->Delete();
+
+            if (other.VAO != nullptr) VAO = other.VAO;
+            if (other.VBO != nullptr) VBO = other.VBO;
+            if (other.EBO != nullptr) EBO = other.EBO;
+            position = other.position;
+            indexCount = other.indexCount;
+            fillColor = other.fillColor;
+
+            other.VAO = nullptr;
+            other.VBO = nullptr;
+            other.EBO = nullptr;
+            other.indexCount = 0;
+            other.position = {0.f};
+            other.fillColor = mk::Color::White;
+          }
+          return *this;
+        }
+        /**
+         * @brief Copy assignment operator.
+         * @param other The shape to copy.
+         * @return Reference to the copied shape.
+         */
+        mk::Shapes::Shape& operator=(const mk::Shapes::Shape& other) noexcept
+        {
+          if (this != &other)
+          {
+            if (VAO != nullptr) VAO->Delete();
+            if (VBO != nullptr) VBO->Delete();
+            if (EBO != nullptr) EBO->Delete();
+
+            if (other.VAO != nullptr) VAO = other.VAO;
+            if (other.VBO != nullptr) VBO = other.VBO;
+            if (other.EBO != nullptr) EBO = other.EBO;
+
+            position = other.position;
+            indexCount = other.indexCount;
+            fillColor = other.fillColor;
+          }
+          return *this;
         }
 
         /**

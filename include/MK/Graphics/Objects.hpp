@@ -22,6 +22,11 @@ namespace mk
          * @param fragmentPath The file path to the fragment shader source code.
          */
         Shader(const std::string& vertexPath, const std::string& fragmentPath);
+        /**
+         * @brief Destructor for Shader object.
+         */
+        ~Shader()
+        { Delete(); }
 
         /**
          * @brief Retrieves the ID of the shader program.
@@ -85,6 +90,11 @@ namespace mk
           glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
           glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
+        /**
+         * @brief Destructor for VAO object.
+         */
+        ~VBO()
+        { Delete(); }
 
         /**
          * @brief Retrieves the ID of the VBO.
@@ -132,6 +142,11 @@ namespace mk
           glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLfloat), indices.data(), GL_STATIC_DRAW);
           glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
+        /**
+         * @brief Destructor for EBO object.
+         */
+        ~EBO()
+        { Delete(); }
 
         /**
          * @brief Retrieves the ID of the EBO.
@@ -171,6 +186,11 @@ namespace mk
          */
         VAO()
         { glGenVertexArrays(1, &this->ID); };
+        /**
+         * @brief Destructor for VAO object.
+         */
+        ~VAO()
+        { Delete(); }
 
         /**
          * @brief Retrieves the ID of the VAO.
