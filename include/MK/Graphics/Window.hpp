@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+#include "Color.hpp"
 #include "Shapes.hpp"
 
 namespace mk
@@ -61,6 +62,12 @@ namespace mk
       std::string getTitle() const
       { return title; }
       /**
+       * @brief Gets the clear color of the window.
+       * @return The clear color of the window.
+       */
+      mk::Color::RGBA getClearColor() const
+      { return clearColor; }
+      /**
        * @brief Gets the time taken to render the last frame.
        * @return The time taken to render the last frame, in seconds.
        */
@@ -79,6 +86,20 @@ namespace mk
        */
       void setTitle(const std::string& title)
       { this->title = title; }
+      /**
+       * @brief Sets the clear color of the window.
+       * @param clearColor The new clear color of the window.
+       */
+      void setClearColor(const mk::Color::RGBA& clearColor)
+      {
+        this->clearColor = clearColor;
+        glClearColor(
+          clearColor.red,
+          clearColor.green,
+          clearColor.blue,
+          clearColor.alpha
+        );
+      }
 
       /**
        * @brief Checks if the window is open.
@@ -113,7 +134,8 @@ namespace mk
       unsigned int height {600u};
       std::string  title  {"MK Window"};
 
-      GLFWwindow* glfwInstance {nullptr};
+      GLFWwindow*     glfwInstance {nullptr};
+      mk::Color::RGBA clearColor   {mk::Color::Black};
 
       float deltaTime {0.f};
       float lastTime  {(float)glfwGetTime()};

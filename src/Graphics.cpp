@@ -103,6 +103,12 @@ void mk::Window::_initialize()
   }
   glfwMakeContextCurrent(glfwInstance);
   glfwSetFramebufferSizeCallback(glfwInstance, framebufferSizeCallback);
+  glClearColor(
+    clearColor.red,
+    clearColor.green,
+    clearColor.blue,
+    clearColor.alpha
+  );
 }
 
 void mk::Window::_updateDeltaTime()

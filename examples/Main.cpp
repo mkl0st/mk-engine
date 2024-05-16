@@ -1,5 +1,3 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
@@ -35,12 +33,6 @@ int main()
 
   // Clear Color
   mk::Color::RGBA clearColor {mk::Color::Black};
-  glClearColor(
-    clearColor.red,
-    clearColor.green,
-    clearColor.blue,
-    clearColor.alpha
-  );
 
   // Shader Program
   mk::Graphics::Shader defaultShader
