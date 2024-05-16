@@ -10,6 +10,15 @@ project(${PROJECT_NAME})
 # CXX Standard
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
+# MinGW
+if(BUILD_FOR_WINDOWS)
+  set(CMAKE_SYSTEM_NAME Windows)
+  set(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
+  set(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
+  set(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
+  set(CMAKE_MAKE_PROGRAM x86_64-w64-mingw32-make)
+endif()
+
 # Compile Commands
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -27,9 +36,16 @@ elseif(NOT GLFW_INCLUDE_DIR)
   message(FATAL_ERROR "MK Include Directory not found!")
 endif()
 
+# Library Folder
+if(BUILD_FOR_WINDOWS)
+  set(LIB_FOLDER "windows")
+else()
+  set(LIB_FOLDER "linux")
+endif()
+
 # Finding Library Binaries
-find_library(GLEW_LIB NAMES GLEW HINTS "${CMAKE_SOURCE_DIR}/lib/linux")
-find_library(GLFW_LIB NAMES glfw3 HINTS "${CMAKE_SOURCE_DIR}/lib/linux")
+find_library(GLEW_LIB NAMES GLEW HINTS "${CMAKE_SOURCE_DIR}/lib/${LIB_FOLDER}")
+find_library(GLFW_LIB NAMES glfw3 HINTS "${CMAKE_SOURCE_DIR}/lib/${LIB_FOLDER}")
 
 # Validating Library Binaries
 if(NOT GLEW_LIB)
@@ -44,9 +60,25 @@ include_directories(${GLFW_INCLUDE_DIR})
 include_directories(${MK_INCLUDE_DIR})
 
 # Linking Libraries
-link_libraries(GL)
 link_libraries(${GLEW_LIB})
 link_libraries(${GLFW_LIB})
+if(BUILD_FOR_WINDOWS)
+  link_libraries(gdi32 user32 kernel32 opengl32)
+  link_libraries(-static -static-libgcc -static-libstdc++ -mwindows)
+else()
+  link_libraries(GL)
+endif()
+
+# DLL Files
+if(WIN32 OR BUILD_FOR_WINDOWS)
+  file(GLOB dll_files ${CMAKE_SOURCE_DIR}/lib/dll/*.dll)
+  foreach(dll_file ${dll_files})
+    file(COPY ${dll_file} DESTINATION ${CMAKE_SOURCE_DIR}/build/examples)
+  endforeach()
+endif()
+
+# Resource Files
+file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_SOURCE_DIR}/build/examples)
 
 # Subdirectories
 add_subdirectory(src)

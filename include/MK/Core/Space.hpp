@@ -388,14 +388,14 @@ namespace mk
      * @return The length of the vector.
      */
     inline float length(const mk::Space::Vec2& vec)
-    { return std::sqrtf(std::pow(vec.x, 2) + std::pow(vec.y, 2)); }
+    { return std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2)); }
     /**
      * @brief Calculates the length of a 3D vector.
      * @param vec The 3D vector.
      * @return The length of the vector.
      */
     inline float length(const mk::Space::Vec3& vec)
-    { return std::sqrtf(std::pow(vec.x, 2) + std::pow(vec.y, 2) + std::pow(vec.z, 2)); }
+    { return std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2) + std::pow(vec.z, 2)); }
     /**
      * @brief Normalizes a 2D vector.
      * @param vec The 2D vector to normalize.
