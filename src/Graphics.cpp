@@ -142,7 +142,7 @@ void mk::Render::Renderer::render(const mk::Shapes::Shape& shape)
 }
 
 mk::Shapes::Rectangle::Rectangle(const mk::Space::Vec2& position, const float width, const float height)
-: mk::Shapes::Shape(position, 6)
+: mk::Shapes::Shape(position, 6), width(width), height(height)
 {
   VAO = new mk::Graphics::VAO();
   VBO = new mk::Graphics::VBO(generateRectangleVertices(width, height));

@@ -14,6 +14,28 @@ namespace mk
   namespace Shapes
   {
     /**
+     * @brief Represents a rectangular boundary.
+     */
+    typedef struct BoundRect
+    {
+      float x;
+      float y;
+      float width;
+      float height;
+
+      /**
+       * @brief Constructs a BoundRect object with the specified parameters.
+       * @param x The x-coordinate of the top-left corner of the rectangle.
+       * @param y The y-coordinate of the top-left corner of the rectangle.
+       * @param width The width of the rectangle.
+       * @param height The height of the rectangle.
+       */
+      BoundRect(const float x, const float y, const float width, const float height)
+      : x(x), y(y), width(width), height(height)
+      {}
+    } BoundRect;
+
+    /**
      * @brief Base class for geometric shapes.
      */
     class Shape
@@ -44,6 +66,11 @@ namespace mk
          */
         mk::Space::Vec2 getPosition() const
         { return position; }
+        /**
+         * @brief Retrieves the boundary rectangle of the shape.
+         * @return The boundary rectangle of the shape.
+         */
+        virtual mk::Shapes::BoundRect getBounds() const = 0;
         /**
          * @brief Retrieves the number of indices in the shape.
          * @return The number of indices.
@@ -76,6 +103,25 @@ namespace mk
         void setPosition(const mk::Space::Vec2& position)
         { this->position = position; }
 
+        /**
+         * @brief Moves the shape along the X-axis by the specified amount.
+         * @param amount The amount by which to move the shape along the X-axis.
+         */
+        void moveX(const float amount)
+        { position.x += amount; }
+        /**
+         * @brief Moves the shape along the Y-axis by the specified amount.
+         * @param amount The amount by which to move the shape along the Y-axis.
+         */
+        void moveY(const float amount)
+        { position.y += amount; }
+        /**
+         * @brief Moves the shape by the specified amount in both the X and Y axes.
+         * @param amount The amount by which to move the shape in both axes.
+         */
+        void move(const mk::Space::Vec2& amount)
+        { position += amount; }
+
       protected:
         mk::Space::Vec2 position {0.f};
         unsigned int indexCount {0};
@@ -99,6 +145,12 @@ namespace mk
          */
         Rectangle(const mk::Space::Vec2& position, const float width, const float height);
 
+        /**
+         * @brief Retrieves the boundary rectangle of the rectangle shape.
+         * @return The boundary rectangle of the rectangle shape.
+         */
+        mk::Shapes::BoundRect getBounds() const override
+        { return BoundRect(position.x, position.y, width, height); }
         /**
          * @brief Retrieves the width of the rectangle.
          * @return The width of the rectangle.

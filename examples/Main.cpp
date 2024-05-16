@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <iostream>
-#include <array>
 #include <string>
 
 #include <MK/Core.hpp>
@@ -35,7 +34,7 @@ int main()
   glPointSize(5.f);
 
   // Clear Color
-  mk::Color::RGBA clearColor {0, 0, 0, 1.f};
+  mk::Color::RGBA clearColor {mk::Color::Black};
   glClearColor(
     clearColor.red,
     clearColor.green,
@@ -85,6 +84,20 @@ int main()
       mk::Graphics::useLineMode();
     else if (window.isKeyPressed(mk::Input::Key::B))
       mk::Graphics::useFillMode();
+
+    float xFactor {0.f};
+    float yFactor {0.f};
+
+    if (window.isKeyPressed(mk::Input::Key::W))
+      yFactor -= 1.f;
+    if (window.isKeyPressed(mk::Input::Key::S))
+      yFactor += 1.f;
+    if (window.isKeyPressed(mk::Input::Key::A))
+      xFactor -= 1.f;
+    if (window.isKeyPressed(mk::Input::Key::D))
+      xFactor += 1.f;
+
+    rect.move(mk::Space::normalize({xFactor, yFactor}) * window.getDeltaTime() * 100.f);
 
     window.clear();
     defaultShader.Use();
