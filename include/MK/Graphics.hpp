@@ -15,6 +15,7 @@
 #include "Graphics/Window.hpp"
 #include "Graphics/Render.hpp"
 #include "Graphics/Shapes.hpp"
+#include "Graphics/Camera.hpp"
 
 namespace mk
 {
