@@ -13,23 +13,6 @@ constexpr unsigned int WINDOW_WIDTH  {800u};
 constexpr unsigned int WINDOW_HEIGHT {600u};
 const     std::string  WINDOW_TITLE  {"MK Engine"};
 
-// Vertices and Indices
-const std::array<GLfloat, 6 * 6> vertices =
-{
-  -0.5f,  -0.5f, 0.f, 1.f, 1.f, 1.f,
-   0.0f,  -0.5f, 0.f, 1.f, 1.f, 1.f,
-   0.5f,  -0.5f, 0.f, 1.f, 1.f, 1.f,
-  -0.25f,  0.0f, 0.f, 1.f, 1.f, 1.f,
-   0.25f,  0.0f, 0.f, 1.f, 1.f, 1.f,
-   0.0f,   0.5f, 0.f, 1.f, 1.f, 1.f,
-};
-const std::array<GLuint, 9> indices =
-{
-  0, 1, 3,
-  1, 2, 4,
-  3, 4, 5,
-};
-
 int main()
 {
   // Initializing GLFW
@@ -70,7 +53,7 @@ int main()
   // Rectangle
   mk::Shapes::Rectangle rect
   {
-    {0.f, 0.f},
+    {32.f, 32.f},
     32.f,
     32.f,
   };
@@ -110,7 +93,7 @@ int main()
     defaultShader.SetMat4("view", view);
     defaultShader.SetMat4("projection", projection);
 
-    window.draw(rect);
+    window.draw(rect, defaultShader);
     window.render();
   }
 

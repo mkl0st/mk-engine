@@ -510,6 +510,13 @@ namespace mk
     inline const float* valuePointer(const mk::Space::Mat4& mat)
     { return &mat[0][0]; }
     /**
+     * @brief Translates a 4x4 matrix by a 2D vector.
+     * @param mat The original 4x4 matrix.
+     * @param vec The translation vector.
+     * @return The translated 4x4 matrix.
+     */
+    mk::Space::Mat4 translate(mk::Space::Mat4 mat, const mk::Space::Vec2& vec);
+    /**
      * @brief Translates a 4x4 matrix by a 3D vector.
      * @param mat The original 4x4 matrix.
      * @param vec The translation vector.

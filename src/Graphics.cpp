@@ -123,9 +123,15 @@ void mk::Window::clear()
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void mk::Window::draw(const mk::Shapes::Shape& shape)
+void mk::Window::draw(const mk::Shapes::Shape& shape, const mk::Graphics::Shader& shader)
 {
+  mk::Space::Mat4 model = mk::Space::translate(
+    {1.f},
+    shape.getPosition()
+  );
+
   shape.getVAO()->Bind();
+  shader.SetMat4("model", model);
   glDrawElements(GL_TRIANGLES, shape.getIndexCount(), GL_UNSIGNED_INT, NULL);
   shape.getVAO()->Unbind();
 }

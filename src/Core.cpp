@@ -54,6 +54,13 @@ std::string mk::File::getContents(const std::string& path)
   return buffer.str();
 }
 
+mk::Space::Mat4 mk::Space::translate(mk::Space::Mat4 mat, const mk::Space::Vec2& vec)
+{
+  mat[3][0] = vec.x;
+  mat[3][1] = vec.y;
+  return mat;
+}
+
 mk::Space::Mat4 mk::Space::translate(mk::Space::Mat4 mat, const mk::Space::Vec3& vec)
 {
   mat[3][0] = vec.x;
