@@ -6,8 +6,8 @@
 #include <MK/Graphics.hpp>
 
 // Window Settings
-constexpr unsigned int WINDOW_WIDTH  {400u};
-constexpr unsigned int WINDOW_HEIGHT {400u};
+constexpr unsigned int WINDOW_WIDTH  {800u};
+constexpr unsigned int WINDOW_HEIGHT {600u};
 const     std::string  WINDOW_TITLE  {"MK Engine"};
 
 int main()
@@ -22,6 +22,7 @@ int main()
     WINDOW_HEIGHT,
     WINDOW_TITLE
   };
+  window.setClearColor({24, 24, 24, 1.f});
 
   // Initializing GLEW
   if (!mk::Core::initializeGLEW())
@@ -60,9 +61,9 @@ int main()
   // Square
   mk::Shapes::Rectangle square
   {
-    {184.f, 184.f},
-    32.f,
-    32.f
+    {896.f, 476.f},
+    128.f,
+    128.f
   };
   square.setFillColor(mk::Color::Green);
 

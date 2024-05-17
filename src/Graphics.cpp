@@ -13,8 +13,6 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
       static_cast<float>(width),
       static_cast<float>(height),
     });
-
-  glViewport(0, 0, width, height);
 }
 
 const std::array<GLuint, 6> rectangleIndices =
@@ -260,15 +258,36 @@ mk::Shapes::Rectangle::Rectangle(const mk::Space::Vec2& position, const float wi
 
 void mk::Camera2D::updateMatrix()
 {
-  mk::Space::Mat4 view {1.f};
+  constexpr float targetAspect =
+    static_cast<float>(mk::Constants::RENDER_WIDTH) / static_cast<float>(mk::Constants::RENDER_HEIGHT);
+
+  float aspectWidth = bufferDimensions.x;
+  float aspectHeight = bufferDimensions.x / targetAspect;
+
+  if (aspectHeight > bufferDimensions.y)
+  {
+    aspectHeight = bufferDimensions.y;
+    aspectWidth = aspectHeight * targetAspect;
+  }
+
+  float paddingTop = bufferDimensions.y / 2.f - aspectHeight / 2.f;
+  float paddingLeft = bufferDimensions.x / 2.f - aspectWidth / 2.f;
+
+  glViewport
+  (
+    paddingLeft,
+    paddingTop,
+    aspectWidth,
+    aspectHeight
+  );
   mk::Space::Mat4 projection = mk::Space::ortho(
-    0,
-    (float)bufferDimensions.x,
-    0,
-    (float)bufferDimensions.y,
+    0.f,
+    mk::Constants::RENDER_WIDTH,
+    0.f,
+    mk::Constants::RENDER_HEIGHT,
     -1.f,
     1.f
   );
 
-  matrix = projection * view;
+  matrix = projection;
 }
