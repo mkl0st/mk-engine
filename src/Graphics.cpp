@@ -183,6 +183,7 @@ void mk::Render::Renderer::render(const mk::Shapes::Shape& shape)
 {
   mk::Space::Vec2 offset = {shape.getBounds().width / 2.f, shape.getBounds().height / 2.f};
   mk::Space::Mat4 model =
+    mk::Space::scale({1.f}, shape.getScale()) *
     mk::Space::rotate({1.f} ,{0.f, 0.f, 1.f}, shape.getRotation()) *
     mk::Space::translate({1.f}, shape.getPosition() + offset);
 

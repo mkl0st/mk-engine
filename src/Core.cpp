@@ -69,6 +69,21 @@ mk::Space::Mat4 mk::Space::translate(mk::Space::Mat4 mat, const mk::Space::Vec3&
   return mat;
 }
 
+mk::Space::Mat4 mk::Space::scale(mk::Space::Mat4 mat, const mk::Space::Vec2& vec)
+{
+  mat[0][0] *= vec.x;
+  mat[1][1] *= vec.y;
+  return mat;
+}
+
+mk::Space::Mat4 mk::Space::scale(mk::Space::Mat4 mat, const mk::Space::Vec3& vec)
+{
+  mat[0][0] *= vec.x;
+  mat[1][1] *= vec.y;
+  mat[2][2] *= vec.z;
+  return mat;
+}
+
 mk::Space::Mat4 mk::Space::rotate(mk::Space::Mat4 mat, const mk::Space::Vec3& vec, const float angle)
 {
   mk::Space::Vec3 normalizedAxes = mk::Space::normalize(vec);

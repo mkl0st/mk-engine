@@ -65,6 +65,7 @@ int main()
     32.f
   };
   square.setFillColor(mk::Color::Green);
+  square.setScaleX(2.f);
 
   // Fullscreen Logic
   bool fullscreenPressed {false};

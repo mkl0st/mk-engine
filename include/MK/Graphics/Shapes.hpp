@@ -66,22 +66,23 @@ namespace mk
          * Moves resources from the source shape.
          */
         Shape(mk::Shapes::Shape&& other) noexcept
-        : position(other.position), indexCount(other.indexCount), fillColor(other.fillColor), VAO(other.VAO), VBO(other.VBO), EBO(other.EBO), rotationDeg(other.rotationDeg)
+        : position(other.position), scale(other.scale), rotation(other.rotation), indexCount(other.indexCount), fillColor(other.fillColor), VAO(other.VAO), VBO(other.VBO), EBO(other.EBO)
         {
           other.VAO = nullptr;
           other.VBO = nullptr;
           other.EBO = nullptr;
           other.indexCount = 0;
           other.position = {0.f};
+          other.scale = {0.f};
+          other.rotation = 0.f;
           other.fillColor = mk::Color::White;
-          other.rotationDeg = 0.f;
         }
         /**
          * @brief Copy constructor.
          * Copies resources from the source shape.
          */
         Shape(const mk::Shapes::Shape& other) noexcept
-        : position(other.position), indexCount(other.indexCount), fillColor(other.fillColor), rotationDeg(other.rotationDeg)
+        : position(other.position), scale(other.scale), rotation(other.rotation), indexCount(other.indexCount), fillColor(other.fillColor)
         {
           if (other.VAO != nullptr) VAO = other.VAO;
           if (other.VBO != nullptr) VBO = other.VBO;
@@ -103,17 +104,19 @@ namespace mk
             if (other.VBO != nullptr) VBO = other.VBO;
             if (other.EBO != nullptr) EBO = other.EBO;
             position = other.position;
+            scale = other.scale;
+            rotation = other.rotation;
             indexCount = other.indexCount;
             fillColor = other.fillColor;
-            rotationDeg = other.rotationDeg;
 
             other.VAO = nullptr;
             other.VBO = nullptr;
             other.EBO = nullptr;
             other.indexCount = 0;
             other.position = {0.f};
+            other.scale = {0.f};
+            other.rotation = 0.f;
             other.fillColor = mk::Color::White;
-            other.rotationDeg = {0.f};
           }
           return *this;
         }
@@ -135,9 +138,10 @@ namespace mk
             if (other.EBO != nullptr) EBO = other.EBO;
 
             position = other.position;
+            scale = other.scale;
+            rotation = other.rotation;
             indexCount = other.indexCount;
             fillColor = other.fillColor;
-            rotationDeg = other.rotationDeg;
           }
           return *this;
         }
@@ -148,6 +152,19 @@ namespace mk
          */
         mk::Space::Vec2 getPosition() const
         { return position; }
+        /**
+         * @brief Retrieves the scale of the shape.
+         * @return The scale of the shape.
+         */
+        mk::Space::Vec2 getScale() const
+        { return scale; }
+        /**
+         * @brief Retrieves the rotation angle of the shape.
+         * @return The rotation angle of the shape.
+         */
+        float getRotation() const
+        { return rotation; }
+
         /**
          * @brief Retrieves the boundary rectangle of the shape.
          * @return The boundary rectangle of the shape.
@@ -183,12 +200,6 @@ namespace mk
          */
         mk::Color::RGBA getFillColor() const
         { return fillColor; }
-        /**
-         * @brief Retrieves the rotation angle of the shape.
-         * @return The rotation angle of the shape.
-         */
-        float getRotation() const
-        { return rotationDeg; }
 
         /**
          * @brief Sets the position of the shape.
@@ -196,6 +207,30 @@ namespace mk
          */
         void setPosition(const mk::Space::Vec2& position)
         { this->position = position; }
+        /**
+         * @brief Sets the scale of the shape.
+         * @param scale The new scale of the shape.
+         */
+        void setScale(const mk::Space::Vec2& scale)
+        { this->scale = scale; }
+        /**
+         * @brief Sets the scale of the shape along the X-axis.
+         * @param scaleX The new scale along the X-axis.
+         */
+        void setScaleX(const float scaleX)
+        { this->scale.x = scaleX; }
+        /**
+         * @brief Sets the scale of the shape along the Y-axis.
+         * @param scaleY The new scale along the Y-axis.
+         */
+        void setScaleY(const float scaleY)
+        { this->scale.y = scaleY; }
+        /**
+         * @brief Sets the rotation angle of the shape.
+         * @param degrees The new rotation angle in degrees.
+         */
+        void setRotation(const float degrees)
+        { this->rotation = degrees; }
         /**
          * @brief Sets the fill color of the shape.
          * @param fillColor The new fill color of the shape.
@@ -225,11 +260,14 @@ namespace mk
          * @brief Rotates the shape by the specified angle.
          * @param degrees The angle in degrees by which to rotate the shape.
          */
-        virtual void rotate(const float degrees) = 0;
+        void rotate(const float degrees)
+        { rotation += degrees; }
 
       protected:
         mk::Space::Vec2 position {0.f};
-        float rotationDeg {0.f};
+        mk::Space::Vec2 scale    {1.f};
+        float           rotation {0.f};
+
         unsigned int indexCount {0};
 
         mk::Graphics::VAO* VAO {nullptr};
@@ -271,13 +309,6 @@ namespace mk
          */
         float getHeight() const
         { return height; }
-
-        /**
-         * @brief Rotates the rectangle by the specified angle in degrees.
-         * @param degrees The angle to rotate the rectangle by.
-         */
-        void rotate(const float degrees) override
-        { rotationDeg += degrees; }
 
       private:
         float width {0.f};

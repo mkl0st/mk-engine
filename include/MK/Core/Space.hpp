@@ -576,6 +576,20 @@ namespace mk
      */
     mk::Space::Mat4 translate(mk::Space::Mat4 mat, const mk::Space::Vec3& vec);
     /**
+     * @brief Scales a 4x4 matrix by a 2D vector.
+     * @param mat The original 4x4 matrix.
+     * @param vec The scale vector.
+     * @return The scaled 4x4 matrix.
+     */
+    mk::Space::Mat4 scale(mk::Space::Mat4 mat, const mk::Space::Vec2& vec);
+    /**
+     * @brief Scales a 4x4 matrix by a 3D vector.
+     * @param mat The original 4x4 matrix.
+     * @param vec The scale vector.
+     * @return The scaled 4x4 matrix.
+     */
+    mk::Space::Mat4 scale(mk::Space::Mat4 mat, const mk::Space::Vec3& vec);
+    /**
      * @brief Rotates a 4x4 matrix by a given angle around a 3D vector.
      * @param mat The original 4x4 matrix.
      * @param vec The axis vector around which the rotation occurs.
