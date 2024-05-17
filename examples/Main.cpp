@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
+#include <vector>
 #include <string>
 
 #include <MK/Core.hpp>
@@ -58,14 +59,21 @@ int main()
   // Renderers
   mk::Render::Renderer shapeRenderer {defaultShader, camera};
 
-  // Square
-  mk::Shapes::Rectangle square
+  // Player
+  mk::Shapes::Rectangle player
   {
-    {896.f, 476.f},
-    128.f,
-    128.f
+    {64.f, 64.f},
+    64.f,
+    64.f
   };
-  square.setFillColor(mk::Color::Green);
+  player.setFillColor(mk::Color::Red);
+  mk::Shapes::Rectangle zone
+  {
+    {192.f, 192.f},
+    408.f,
+    192.f
+  };
+  zone.setFillColor(mk::Color::Yellow);
 
   // Fullscreen Logic
   bool fullscreenPressed {false};
@@ -100,15 +108,29 @@ int main()
       fullscreenPressed = false;
     }
 
-    square.rotate(30.f * window.getDeltaTime());
-    square.setScale({
-      2 - (std::sin(window.getTime()) + 1.f) / 2.f,
-    });
+    float xFactor {0.f};
+    float yFactor {0.f};
+
+    if (window.isKeyPressed(mk::Input::Key::W))
+      yFactor -= 1.f;
+    if (window.isKeyPressed(mk::Input::Key::S))
+      yFactor += 1.f;
+    if (window.isKeyPressed(mk::Input::Key::A))
+      xFactor -= 1.f;
+    if (window.isKeyPressed(mk::Input::Key::D))
+      xFactor += 1.f;
+
+    player.move(mk::Space::normalize({xFactor, yFactor}) * window.getDeltaTime() * 300.f);
+
+    mk::Shapes::Collision::AABB(player.getBounds(), zone.getBounds())
+      ? player.setFillColor(mk::Color::Blue)
+      : player.setFillColor(mk::Color::Red);
 
     window.clear();
 
     shapeRenderer.use();
-    shapeRenderer.render(square);
+    shapeRenderer.render(zone);
+    shapeRenderer.render(player);
 
     window.display();
   }

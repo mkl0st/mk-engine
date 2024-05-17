@@ -314,6 +314,30 @@ namespace mk
         float width {0.f};
         float height {0.f};
     };
+
+    /**
+     * @brief Namespace containing functions related to collision detection.
+     * @namespace Collision
+     */
+    namespace Collision
+    {
+      /**
+       * @brief Checks if two Axis-Aligned Bounding Boxes (AABBs) intersect.
+       * @param rectOne The bounding box of the first object.
+       * @param rectTwo The bounding box of the second object.
+       * @return True if the AABBs intersect, false otherwise.
+       */
+      inline bool AABB(const mk::Shapes::BoundRect& rectOne, const mk::Shapes::BoundRect& rectTwo)
+      {
+        return
+        (
+          rectOne.x < rectTwo.x + rectTwo.width &&
+          rectOne.x + rectOne.width > rectTwo.x &&
+          rectOne.y < rectTwo.y + rectTwo.height &&
+          rectOne.y + rectOne.height > rectTwo.y
+        );
+      }
+    }
   }
 }
 

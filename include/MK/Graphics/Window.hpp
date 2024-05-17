@@ -114,7 +114,10 @@ namespace mk
        * @param title The new title of the window.
        */
       void setTitle(const std::string& title)
-      { this->title = title; }
+      {
+        this->title = title;
+        glfwSetWindowTitle(glfwInstance, title.c_str());
+      }
       /**
        * @brief Sets the clear color of the window.
        * @param clearColor The new clear color of the window.

@@ -18,7 +18,7 @@ namespace mk
     /**
      * @brief The version of the MK Engine.
      */
-    const std::string ENGINE_VERSION {"0.1 InDev"};
+    const std::string ENGINE_VERSION {"0.1"};
     /**
      * @brief The author of the MK Engine.
      */
