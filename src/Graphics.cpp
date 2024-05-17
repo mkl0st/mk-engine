@@ -2,7 +2,11 @@
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-  (void)window;
+  mk::Window* windowInstance = static_cast<mk::Window*>(glfwGetWindowUserPointer(window));
+  windowInstance->setBufferDimensions({
+    static_cast<float>(width),
+    static_cast<float>(height),
+  });
   glViewport(0, 0, width, height);
 }
 
@@ -102,6 +106,7 @@ void mk::Window::_initialize()
     mk::Core::terminate();
   }
   glfwMakeContextCurrent(glfwInstance);
+  glfwSetWindowUserPointer(glfwInstance, this);
   glfwSetFramebufferSizeCallback(glfwInstance, framebufferSizeCallback);
   glClearColor(
     clearColor.red,
@@ -116,6 +121,46 @@ void mk::Window::_updateDeltaTime()
   float currentTime = (float)glfwGetTime();
   deltaTime = currentTime - lastTime;
   lastTime = currentTime;
+}
+
+void mk::Window::maximize()
+{
+  int xPos;
+  int yPos;
+  glfwGetWindowPos(glfwInstance, &xPos, &yPos);
+
+  GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+  const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+  cachedX = xPos;
+  cachedY = yPos;
+  cachedWidth = width;
+  cachedHeight = height;
+
+  glfwSetWindowMonitor(
+    glfwInstance,
+    monitor,
+    0,
+    0,
+    mode->width,
+    mode->height,
+    mode->refreshRate
+  );
+  isMaximized = true;
+}
+
+void mk::Window::unmaximize()
+{
+  glfwSetWindowMonitor(
+    glfwInstance,
+    0,
+    cachedX,
+    cachedY,
+    cachedWidth,
+    cachedHeight,
+    0
+  );
+  isMaximized = false;
 }
 
 void mk::Window::update()

@@ -79,7 +79,22 @@ namespace mk
        */
       float getFPS() const
       { return deltaTime > 0.f ? 1.f / deltaTime : 0.f; }
+      /**
+       * @brief Checks if the window is maximized.
+       * @return True if the window is maximized, false otherwise.
+       */
+      bool getIsMaximized() const
+      { return isMaximized; }
 
+      /**
+       * @brief Sets the buffer dimensions of the window.
+       * @param bufferDimensions The new buffer dimensions.
+       */
+      void setBufferDimensions(const mk::Space::Vec2& bufferDimensions)
+      {
+        width = bufferDimensions.x;
+        height = bufferDimensions.y;
+      }
       /**
        * @brief Sets the title of the window.
        * @param title The new title of the window.
@@ -100,6 +115,12 @@ namespace mk
           clearColor.alpha
         );
       }
+      /**
+       * @brief Sets the maximized state of the window.
+       * @param isMaximized The new maximized state of the window.
+       */
+      void setIsMaximized(const bool isMaximized)
+      { this->isMaximized = isMaximized; }
 
       /**
        * @brief Checks if the window is open.
@@ -115,6 +136,15 @@ namespace mk
        */
       bool isKeyPressed(const mk::Input::Key& key) const
       { return glfwGetKey(this->glfwInstance, key) == GLFW_PRESS; }
+
+      /**
+       * @brief Maximizes the window.
+       */
+      void maximize();
+      /**
+       * @brief Restores the window to its normal size from a maximized state.
+       */
+      void unmaximize();
 
       /**
        * @brief Updates the window.
@@ -139,6 +169,12 @@ namespace mk
 
       float deltaTime {0.f};
       float lastTime  {(float)glfwGetTime()};
+
+      float        cachedX      {0.f};
+      float        cachedY      {0.f};
+      unsigned int cachedWidth  {0u};
+      unsigned int cachedHeight {0u};
+      bool         isMaximized  {false};
 
       /**
        * @brief Initializes the window.

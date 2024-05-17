@@ -73,6 +73,8 @@ int main()
     1.f
   };
 
+  bool fullscreenPressed {false};
+
   // Main Loop
   while (window.isOpen())
   {
@@ -84,6 +86,21 @@ int main()
       mk::Graphics::useLineMode();
     else if (window.isKeyPressed(mk::Input::Key::B))
       mk::Graphics::useFillMode();
+
+    if (window.isKeyPressed(mk::Input::Key::F))
+    {
+      if (!fullscreenPressed)
+      {
+        window.getIsMaximized()
+          ? window.unmaximize()
+          : window.maximize();
+        fullscreenPressed = true;
+      }
+    }
+    else
+    {
+      fullscreenPressed = false;
+    }
 
     window.clear();
     defaultShader.Use();
