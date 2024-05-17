@@ -19,10 +19,10 @@ const std::array<GLuint, 6> rectangleIndices =
 std::array<GLfloat, 4 * 3> generateRectangleVertices(const float width, const float height)
 {
   return {
-    0.f,   height, 0.f,
-    width, height, 0.f,
-    0.f,   0.0f,   0.f,
-    width, 0.0f,   0.f,
+    -width / 2.f,  height / 2.f, 0.f,
+     width / 2.f,  height / 2.f, 0.f,
+    -width / 2.f, -height / 2.f, 0.f,
+     width / 2.f, -height / 2.f, 0.f,
   };
 }
 
@@ -181,10 +181,10 @@ void mk::Window::display()
 
 void mk::Render::Renderer::render(const mk::Shapes::Shape& shape)
 {
-  mk::Space::Mat4 model = mk::Space::translate(
-    {1.f},
-    shape.getPosition()
-  );
+  mk::Space::Vec2 offset = {shape.getBounds().width / 2.f, shape.getBounds().height / 2.f};
+  mk::Space::Mat4 model =
+    mk::Space::rotate({1.f} ,{0.f, 0.f, 1.f}, shape.getRotation()) *
+    mk::Space::translate({1.f}, shape.getPosition() + offset);
 
   shape.getVAO()->Bind();
   shader.SetMat4("model", model);

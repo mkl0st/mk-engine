@@ -2,6 +2,7 @@
 #define MK_SHAPES_HPP
 
 #include <MK/Core/Space.hpp>
+#include <MK/Core/Debug.hpp>
 
 #include "Color.hpp"
 #include "Objects.hpp"
@@ -65,7 +66,7 @@ namespace mk
          * Moves resources from the source shape.
          */
         Shape(mk::Shapes::Shape&& other) noexcept
-        : position(other.position), indexCount(other.indexCount), fillColor(other.fillColor), VAO(other.VAO), VBO(other.VBO), EBO(other.EBO)
+        : position(other.position), indexCount(other.indexCount), fillColor(other.fillColor), VAO(other.VAO), VBO(other.VBO), EBO(other.EBO), rotationDeg(other.rotationDeg)
         {
           other.VAO = nullptr;
           other.VBO = nullptr;
@@ -73,13 +74,14 @@ namespace mk
           other.indexCount = 0;
           other.position = {0.f};
           other.fillColor = mk::Color::White;
+          other.rotationDeg = 0.f;
         }
         /**
          * @brief Copy constructor.
          * Copies resources from the source shape.
          */
         Shape(const mk::Shapes::Shape& other) noexcept
-        : position(other.position), indexCount(other.indexCount), fillColor(other.fillColor)
+        : position(other.position), indexCount(other.indexCount), fillColor(other.fillColor), rotationDeg(other.rotationDeg)
         {
           if (other.VAO != nullptr) VAO = other.VAO;
           if (other.VBO != nullptr) VBO = other.VBO;
@@ -103,6 +105,7 @@ namespace mk
             position = other.position;
             indexCount = other.indexCount;
             fillColor = other.fillColor;
+            rotationDeg = other.rotationDeg;
 
             other.VAO = nullptr;
             other.VBO = nullptr;
@@ -110,6 +113,7 @@ namespace mk
             other.indexCount = 0;
             other.position = {0.f};
             other.fillColor = mk::Color::White;
+            other.rotationDeg = {0.f};
           }
           return *this;
         }
@@ -133,6 +137,7 @@ namespace mk
             position = other.position;
             indexCount = other.indexCount;
             fillColor = other.fillColor;
+            rotationDeg = other.rotationDeg;
           }
           return *this;
         }
@@ -178,6 +183,12 @@ namespace mk
          */
         mk::Color::RGBA getFillColor() const
         { return fillColor; }
+        /**
+         * @brief Retrieves the rotation angle of the shape.
+         * @return The rotation angle of the shape.
+         */
+        float getRotation() const
+        { return rotationDeg; }
 
         /**
          * @brief Sets the position of the shape.
@@ -210,9 +221,15 @@ namespace mk
          */
         void move(const mk::Space::Vec2& amount)
         { position += amount; }
+        /**
+         * @brief Rotates the shape by the specified angle.
+         * @param degrees The angle in degrees by which to rotate the shape.
+         */
+        virtual void rotate(const float degrees) = 0;
 
       protected:
         mk::Space::Vec2 position {0.f};
+        float rotationDeg {0.f};
         unsigned int indexCount {0};
 
         mk::Graphics::VAO* VAO {nullptr};
@@ -254,6 +271,13 @@ namespace mk
          */
         float getHeight() const
         { return height; }
+
+        /**
+         * @brief Rotates the rectangle by the specified angle in degrees.
+         * @param degrees The angle to rotate the rectangle by.
+         */
+        void rotate(const float degrees) override
+        { rotationDeg += degrees; }
 
       private:
         float width {0.f};

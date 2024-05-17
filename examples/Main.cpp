@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <iostream>
-#include <vector>
 #include <string>
 
 #include <MK/Core.hpp>
@@ -42,21 +41,6 @@ int main()
     "resources/Shaders/default.frag"
   };
 
-  // Rectangle
-  std::vector<mk::Shapes::Rectangle> rectangles;
-  for (int y = 0; y < 8; y++)
-    for (int x = 0; x < 8; x++)
-    {
-      rectangles.emplace_back(mk::Shapes::Rectangle(
-        {x * 50.f, y * 50.f},
-        50.f,
-        50.f
-      ));
-      rectangles.back().setFillColor(
-        ((y % 2 ? 0 : 1) + x) % 2 ? mk::Color::RGBA(237, 183, 173, 1.f) : mk::Color::RGBA(199, 81, 60, 1.f)
-      );
-    }
-
   // Printing Engine and Version Info
   mk::Core::printEngineInfo();
   std::cout << '\n';
@@ -73,6 +57,16 @@ int main()
     1.f
   };
 
+  // Square
+  mk::Shapes::Rectangle square
+  {
+    {184.f, 184.f},
+    32.f,
+    32.f
+  };
+  square.setFillColor(mk::Color::Green);
+
+  // Fullscreen Logic
   bool fullscreenPressed {false};
 
   // Main Loop
@@ -102,14 +96,15 @@ int main()
       fullscreenPressed = false;
     }
 
+    square.rotate(30.f * window.getDeltaTime());
+
     window.clear();
     defaultShader.Use();
 
     camera.updateMatrix();
     camera.applyMatrix(defaultShader);
 
-    for (const auto& rectangle : rectangles)
-      shapeRenderer.render(rectangle);
+    shapeRenderer.render(square);
 
     window.display();
   }

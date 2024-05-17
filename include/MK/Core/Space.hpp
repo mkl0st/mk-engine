@@ -11,6 +11,26 @@ namespace mk
   namespace Space
   {
     /**
+     * @brief Constant value for pi.
+     */
+    constexpr float PI = 3.141593f;
+
+    /**
+     * @brief Converts radians to degrees.
+     * @param radians The angle in radians.
+     * @return The angle in degrees.
+     */
+    inline float degrees(const float radians)
+    { return radians * 180.0f / mk::Space::PI; }
+    /**
+     * @brief Converts degrees to radians.
+     * @param degrees The angle in degrees.
+     * @return The angle in radians.
+     */
+    inline float radians(const float degrees)
+    { return degrees * mk::Space::PI / 180.0f; }
+
+    /**
      * @brief A class representing a 2D vector.
      */
     class Vec2
@@ -67,6 +87,13 @@ namespace mk
             this->y - vec.y,
           };
         }
+        /**
+         * @brief Overloaded negation operator.
+         * Negates the vector components.
+         * @return The negated vector.
+         */
+        mk::Space::Vec2 operator-() const
+        { return {-this->x, -this->y}; }
         /**
          * @brief Overloaded multiplication operator.
          * Multiplies the vector by a scalar value.
@@ -250,6 +277,13 @@ namespace mk
             this->z - vec.z,
           };
         }
+        /**
+         * @brief Overloaded negation operator.
+         * Negates the vector components.
+         * @return The negated vector.
+         */
+        mk::Space::Vec3 operator-() const
+        { return {-this->x, -this->y, -this->z}; }
         /**
          * @brief Overloaded multiplication operator.
          * Multiplies the vector by a scalar value.
@@ -541,6 +575,14 @@ namespace mk
      * @return The translated 4x4 matrix.
      */
     mk::Space::Mat4 translate(mk::Space::Mat4 mat, const mk::Space::Vec3& vec);
+    /**
+     * @brief Rotates a 4x4 matrix by a given angle around a 3D vector.
+     * @param mat The original 4x4 matrix.
+     * @param vec The axis vector around which the rotation occurs.
+     * @param angle The angle of rotation in degrees.
+     * @return The rotated 4x4 matrix.
+     */
+    mk::Space::Mat4 rotate(mk::Space::Mat4 mat, const mk::Space::Vec3& vec, const float angle);
     /**
      * @brief Creates an orthographic projection matrix.
      * @param left The coordinate of the left vertical clipping plane.
