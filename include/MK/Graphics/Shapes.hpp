@@ -230,7 +230,7 @@ namespace mk
          * @param degrees The new rotation angle in degrees.
          */
         void setRotation(const float degrees)
-        { this->rotation = degrees; }
+        { this->rotation = std::remainderf(degrees, 360.f);; }
         /**
          * @brief Sets the fill color of the shape.
          * @param fillColor The new fill color of the shape.
@@ -261,7 +261,7 @@ namespace mk
          * @param degrees The angle in degrees by which to rotate the shape.
          */
         void rotate(const float degrees)
-        { rotation += degrees; }
+        { rotation = std::remainderf(rotation - degrees, 360.f); }
 
       protected:
         mk::Space::Vec2 position {0.f};

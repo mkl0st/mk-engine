@@ -46,9 +46,6 @@ int main()
   std::cout << '\n';
   mk::Core::printVersionInfo();
 
-  // Renderers
-  mk::Render::Renderer shapeRenderer {defaultShader};
-
   // Camera
   mk::Camera2D camera
   {
@@ -56,6 +53,9 @@ int main()
     -1.f,
     1.f
   };
+
+  // Renderers
+  mk::Render::Renderer shapeRenderer {defaultShader, camera};
 
   // Square
   mk::Shapes::Rectangle square
@@ -65,10 +65,12 @@ int main()
     32.f
   };
   square.setFillColor(mk::Color::Green);
-  square.setScaleX(2.f);
 
   // Fullscreen Logic
   bool fullscreenPressed {false};
+
+  // Adding Renderer to the Window
+  window.addRenderer(shapeRenderer);
 
   // Main Loop
   while (window.isOpen())
@@ -98,13 +100,13 @@ int main()
     }
 
     square.rotate(30.f * window.getDeltaTime());
+    square.setScale({
+      2 - (std::sin(window.getTime()) + 1.f) / 2.f,
+    });
 
     window.clear();
-    defaultShader.Use();
 
-    camera.updateMatrix();
-    camera.applyMatrix(defaultShader);
-
+    shapeRenderer.use();
     shapeRenderer.render(square);
 
     window.display();

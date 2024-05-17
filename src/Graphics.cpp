@@ -3,10 +3,17 @@
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
   mk::Window* windowInstance = static_cast<mk::Window*>(glfwGetWindowUserPointer(window));
+
   windowInstance->setBufferDimensions({
     static_cast<float>(width),
     static_cast<float>(height),
   });
+  for (auto& renderer : windowInstance->getRenderers())
+    renderer->getCamera().setBufferDimensions({
+      static_cast<float>(width),
+      static_cast<float>(height),
+    });
+
   glViewport(0, 0, width, height);
 }
 
@@ -118,7 +125,7 @@ void mk::Window::_initialize()
 
 void mk::Window::_updateDeltaTime()
 {
-  float currentTime = (float)glfwGetTime();
+  float currentTime = static_cast<float>(glfwGetTime());
   deltaTime = currentTime - lastTime;
   lastTime = currentTime;
 }
@@ -179,7 +186,46 @@ void mk::Window::display()
   glfwSwapBuffers(glfwInstance);
 }
 
-void mk::Render::Renderer::render(const mk::Shapes::Shape& shape)
+void mk::Window::addRenderer(const mk::Render::Renderer& renderer)
+{
+  auto it = std::find_if(
+    renderers.begin(),
+    renderers.end(),
+    [&renderer](const mk::Render::Renderer* r)
+    {
+      return r == &renderer;
+    }
+  );
+  if (it == renderers.end())
+  {
+    renderers.push_back(const_cast<mk::Render::Renderer*>(&renderer));
+  }
+}
+
+void mk::Window::removeRenderer(const mk::Render::Renderer& renderer)
+{
+  auto it = std::find_if(
+    renderers.begin(),
+    renderers.end(),
+    [&renderer](const mk::Render::Renderer* r)
+    {
+      return r == &renderer;
+    }
+  );
+  if (it != renderers.end())
+  {
+    renderers.erase(it);
+  }
+}
+
+void mk::Render::Renderer::use()
+{
+  shader.Use();
+  camera.updateMatrix();
+  camera.applyMatrix(shader);
+}
+
+void mk::Render::Renderer::render(const mk::Shapes::Shape& shape) const
 {
   mk::Space::Vec2 offset = {shape.getBounds().width / 2.f, shape.getBounds().height / 2.f};
   mk::Space::Mat4 model =
