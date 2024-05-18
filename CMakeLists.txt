@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 
 # Constants
 set(PROJECT_NAME "mk")
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 # Project Name
 project(${PROJECT_NAME})
@@ -58,16 +59,6 @@ endif()
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLFW_INCLUDE_DIR})
 include_directories(${MK_INCLUDE_DIR})
-
-# Linking Libraries
-link_libraries(${GLEW_LIB})
-link_libraries(${GLFW_LIB})
-if(BUILD_FOR_WINDOWS)
-  link_libraries(gdi32 user32 kernel32 opengl32)
-  link_libraries(-static -static-libgcc -static-libstdc++ -mwindows)
-else()
-  link_libraries(GL)
-endif()
 
 # DLL Files
 if(WIN32 OR BUILD_FOR_WINDOWS)

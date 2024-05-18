@@ -18,7 +18,7 @@ namespace mk
     /**
      * @brief The version of the MK Engine.
      */
-    const std::string ENGINE_VERSION {"0.1 InDev"};
+    const std::string ENGINE_VERSION {"0.1"};
     /**
      * @brief The author of the MK Engine.
      */
@@ -41,6 +41,15 @@ namespace mk
      * @brief The size of the info log buffer used for OpenGL error messages.
      */
     constexpr unsigned int INFO_LOG_SIZE {512u};
+
+    /**
+     * @brief The width of the rendering window used as a reference to scale the scene.
+     */
+    constexpr unsigned int RENDER_WIDTH {1920u};
+    /**
+     * @brief The height of the rendering window used as a reference to scale the scene.
+     */
+    constexpr unsigned int RENDER_HEIGHT {1080u};
   }
 }
 

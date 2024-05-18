@@ -3,9 +3,11 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <vector>
 #include <string>
 
 #include "Color.hpp"
+#include "Render.hpp"
 #include "Shapes.hpp"
 
 namespace mk
@@ -68,6 +70,12 @@ namespace mk
       mk::Color::RGBA getClearColor() const
       { return clearColor; }
       /**
+       * @brief Gets the time elapsed since GLFW was initialized.
+       * @return The time elapsed since GLFW was initialized, in seconds.
+       */
+      float getTime() const
+      { return static_cast<float>(glfwGetTime()); }
+      /**
        * @brief Gets the time taken to render the last frame.
        * @return The time taken to render the last frame, in seconds.
        */
@@ -79,13 +87,37 @@ namespace mk
        */
       float getFPS() const
       { return deltaTime > 0.f ? 1.f / deltaTime : 0.f; }
+      /**
+       * @brief Checks if the window is maximized.
+       * @return True if the window is maximized, false otherwise.
+       */
+      bool getIsMaximized() const
+      { return isMaximized; }
+      /**
+       * @brief Retrieves the list of renderers.
+       * @return A vector containing pointers to the renderers.
+       */
+      std::vector<mk::Render::Renderer*> getRenderers() const
+      { return renderers; }
 
+      /**
+       * @brief Sets the buffer dimensions of the window.
+       * @param bufferDimensions The new buffer dimensions.
+       */
+      void setBufferDimensions(const mk::Space::Vec2& bufferDimensions)
+      {
+        width = bufferDimensions.x;
+        height = bufferDimensions.y;
+      }
       /**
        * @brief Sets the title of the window.
        * @param title The new title of the window.
        */
       void setTitle(const std::string& title)
-      { this->title = title; }
+      {
+        this->title = title;
+        glfwSetWindowTitle(glfwInstance, title.c_str());
+      }
       /**
        * @brief Sets the clear color of the window.
        * @param clearColor The new clear color of the window.
@@ -100,6 +132,12 @@ namespace mk
           clearColor.alpha
         );
       }
+      /**
+       * @brief Sets the maximized state of the window.
+       * @param isMaximized The new maximized state of the window.
+       */
+      void setIsMaximized(const bool isMaximized)
+      { this->isMaximized = isMaximized; }
 
       /**
        * @brief Checks if the window is open.
@@ -115,6 +153,26 @@ namespace mk
        */
       bool isKeyPressed(const mk::Input::Key& key) const
       { return glfwGetKey(this->glfwInstance, key) == GLFW_PRESS; }
+
+      /**
+       * @brief Adds a renderer to the list of renderers.
+       * @param renderer The renderer to add.
+       */
+      void addRenderer(const mk::Render::Renderer& renderer);
+      /**
+       * @brief Removes a renderer from the list of renderers.
+       * @param renderer The renderer to remove.
+       */
+      void removeRenderer(const mk::Render::Renderer& renderer);
+
+      /**
+       * @brief Maximizes the window.
+       */
+      void maximize();
+      /**
+       * @brief Restores the window to its normal size from a maximized state.
+       */
+      void unmaximize();
 
       /**
        * @brief Updates the window.
@@ -138,7 +196,15 @@ namespace mk
       mk::Color::RGBA clearColor   {mk::Color::Black};
 
       float deltaTime {0.f};
-      float lastTime  {(float)glfwGetTime()};
+      float lastTime  {static_cast<float>(glfwGetTime())};
+
+      float        cachedX      {0.f};
+      float        cachedY      {0.f};
+      unsigned int cachedWidth  {0u};
+      unsigned int cachedHeight {0u};
+      bool         isMaximized  {false};
+
+      std::vector<mk::Render::Renderer*> renderers;
 
       /**
        * @brief Initializes the window.

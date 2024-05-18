@@ -2,8 +2,17 @@
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-  (void)window;
-  glViewport(0, 0, width, height);
+  mk::Window* windowInstance = static_cast<mk::Window*>(glfwGetWindowUserPointer(window));
+
+  windowInstance->setBufferDimensions({
+    static_cast<float>(width),
+    static_cast<float>(height),
+  });
+  for (auto& renderer : windowInstance->getRenderers())
+    renderer->getCamera().setBufferDimensions({
+      static_cast<float>(width),
+      static_cast<float>(height),
+    });
 }
 
 const std::array<GLuint, 6> rectangleIndices =
@@ -15,10 +24,10 @@ const std::array<GLuint, 6> rectangleIndices =
 std::array<GLfloat, 4 * 3> generateRectangleVertices(const float width, const float height)
 {
   return {
-    0.f,   height, 0.f,
-    width, height, 0.f,
-    0.f,   0.0f,   0.f,
-    width, 0.0f,   0.f,
+    -width / 2.f,  height / 2.f, 0.f,
+     width / 2.f,  height / 2.f, 0.f,
+    -width / 2.f, -height / 2.f, 0.f,
+     width / 2.f, -height / 2.f, 0.f,
   };
 }
 
@@ -102,6 +111,7 @@ void mk::Window::_initialize()
     mk::Core::terminate();
   }
   glfwMakeContextCurrent(glfwInstance);
+  glfwSetWindowUserPointer(glfwInstance, this);
   glfwSetFramebufferSizeCallback(glfwInstance, framebufferSizeCallback);
   glClearColor(
     clearColor.red,
@@ -113,9 +123,49 @@ void mk::Window::_initialize()
 
 void mk::Window::_updateDeltaTime()
 {
-  float currentTime = (float)glfwGetTime();
+  float currentTime = static_cast<float>(glfwGetTime());
   deltaTime = currentTime - lastTime;
   lastTime = currentTime;
+}
+
+void mk::Window::maximize()
+{
+  int xPos;
+  int yPos;
+  glfwGetWindowPos(glfwInstance, &xPos, &yPos);
+
+  GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+  const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+  cachedX = xPos;
+  cachedY = yPos;
+  cachedWidth = width;
+  cachedHeight = height;
+
+  glfwSetWindowMonitor(
+    glfwInstance,
+    monitor,
+    0,
+    0,
+    mode->width,
+    mode->height,
+    mode->refreshRate
+  );
+  isMaximized = true;
+}
+
+void mk::Window::unmaximize()
+{
+  glfwSetWindowMonitor(
+    glfwInstance,
+    0,
+    cachedX,
+    cachedY,
+    cachedWidth,
+    cachedHeight,
+    0
+  );
+  isMaximized = false;
 }
 
 void mk::Window::update()
@@ -134,12 +184,52 @@ void mk::Window::display()
   glfwSwapBuffers(glfwInstance);
 }
 
-void mk::Render::Renderer::render(const mk::Shapes::Shape& shape)
+void mk::Window::addRenderer(const mk::Render::Renderer& renderer)
 {
-  mk::Space::Mat4 model = mk::Space::translate(
-    {1.f},
-    shape.getPosition()
+  auto it = std::find_if(
+    renderers.begin(),
+    renderers.end(),
+    [&renderer](const mk::Render::Renderer* r)
+    {
+      return r == &renderer;
+    }
   );
+  if (it == renderers.end())
+  {
+    renderers.push_back(const_cast<mk::Render::Renderer*>(&renderer));
+  }
+}
+
+void mk::Window::removeRenderer(const mk::Render::Renderer& renderer)
+{
+  auto it = std::find_if(
+    renderers.begin(),
+    renderers.end(),
+    [&renderer](const mk::Render::Renderer* r)
+    {
+      return r == &renderer;
+    }
+  );
+  if (it != renderers.end())
+  {
+    renderers.erase(it);
+  }
+}
+
+void mk::Render::Renderer::use()
+{
+  shader.Use();
+  camera.updateMatrix();
+  camera.applyMatrix(shader);
+}
+
+void mk::Render::Renderer::render(const mk::Shapes::Shape& shape) const
+{
+  mk::Space::Vec2 offset = {shape.getBounds().width / 2.f, shape.getBounds().height / 2.f};
+  mk::Space::Mat4 model =
+    mk::Space::scale({1.f}, shape.getScale()) *
+    mk::Space::rotate({1.f} ,{0.f, 0.f, 1.f}, shape.getRotation()) *
+    mk::Space::translate({1.f}, shape.getPosition() + offset);
 
   shape.getVAO()->Bind();
   shader.SetMat4("model", model);
@@ -168,15 +258,36 @@ mk::Shapes::Rectangle::Rectangle(const mk::Space::Vec2& position, const float wi
 
 void mk::Camera2D::updateMatrix()
 {
-  mk::Space::Mat4 view {1.f};
+  constexpr float targetAspect =
+    static_cast<float>(mk::Constants::RENDER_WIDTH) / static_cast<float>(mk::Constants::RENDER_HEIGHT);
+
+  float aspectWidth = bufferDimensions.x;
+  float aspectHeight = bufferDimensions.x / targetAspect;
+
+  if (aspectHeight > bufferDimensions.y)
+  {
+    aspectHeight = bufferDimensions.y;
+    aspectWidth = aspectHeight * targetAspect;
+  }
+
+  float paddingTop = bufferDimensions.y / 2.f - aspectHeight / 2.f;
+  float paddingLeft = bufferDimensions.x / 2.f - aspectWidth / 2.f;
+
+  glViewport
+  (
+    paddingLeft,
+    paddingTop,
+    aspectWidth,
+    aspectHeight
+  );
   mk::Space::Mat4 projection = mk::Space::ortho(
-    0,
-    (float)bufferDimensions.x,
-    0,
-    (float)bufferDimensions.y,
+    0.f,
+    mk::Constants::RENDER_WIDTH,
+    0.f,
+    mk::Constants::RENDER_HEIGHT,
     -1.f,
     1.f
   );
 
-  matrix = projection * view;
+  matrix = projection;
 }

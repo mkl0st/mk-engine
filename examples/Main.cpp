@@ -7,8 +7,8 @@
 #include <MK/Graphics.hpp>
 
 // Window Settings
-constexpr unsigned int WINDOW_WIDTH  {400u};
-constexpr unsigned int WINDOW_HEIGHT {400u};
+constexpr unsigned int WINDOW_WIDTH  {800u};
+constexpr unsigned int WINDOW_HEIGHT {600u};
 const     std::string  WINDOW_TITLE  {"MK Engine"};
 
 int main()
@@ -23,6 +23,7 @@ int main()
     WINDOW_HEIGHT,
     WINDOW_TITLE
   };
+  window.setClearColor({24, 24, 24, 1.f});
 
   // Initializing GLEW
   if (!mk::Core::initializeGLEW())
@@ -42,28 +43,10 @@ int main()
     "resources/Shaders/default.frag"
   };
 
-  // Rectangle
-  std::vector<mk::Shapes::Rectangle> rectangles;
-  for (int y = 0; y < 8; y++)
-    for (int x = 0; x < 8; x++)
-    {
-      rectangles.emplace_back(mk::Shapes::Rectangle(
-        {x * 50.f, y * 50.f},
-        50.f,
-        50.f
-      ));
-      rectangles.back().setFillColor(
-        ((y % 2 ? 0 : 1) + x) % 2 ? mk::Color::RGBA(237, 183, 173, 1.f) : mk::Color::RGBA(199, 81, 60, 1.f)
-      );
-    }
-
   // Printing Engine and Version Info
   mk::Core::printEngineInfo();
   std::cout << '\n';
   mk::Core::printVersionInfo();
-
-  // Renderers
-  mk::Render::Renderer shapeRenderer {defaultShader};
 
   // Camera
   mk::Camera2D camera
@@ -72,6 +55,31 @@ int main()
     -1.f,
     1.f
   };
+
+  // Renderers
+  mk::Render::Renderer shapeRenderer {defaultShader, camera};
+
+  // Player
+  mk::Shapes::Rectangle player
+  {
+    {64.f, 64.f},
+    64.f,
+    64.f
+  };
+  player.setFillColor(mk::Color::Red);
+  mk::Shapes::Rectangle zone
+  {
+    {192.f, 192.f},
+    408.f,
+    192.f
+  };
+  zone.setFillColor(mk::Color::Yellow);
+
+  // Fullscreen Logic
+  bool fullscreenPressed {false};
+
+  // Adding Renderer to the Window
+  window.addRenderer(shapeRenderer);
 
   // Main Loop
   while (window.isOpen())
@@ -85,14 +93,44 @@ int main()
     else if (window.isKeyPressed(mk::Input::Key::B))
       mk::Graphics::useFillMode();
 
+    if (window.isKeyPressed(mk::Input::Key::F))
+    {
+      if (!fullscreenPressed)
+      {
+        window.getIsMaximized()
+          ? window.unmaximize()
+          : window.maximize();
+        fullscreenPressed = true;
+      }
+    }
+    else
+    {
+      fullscreenPressed = false;
+    }
+
+    float xFactor {0.f};
+    float yFactor {0.f};
+
+    if (window.isKeyPressed(mk::Input::Key::W))
+      yFactor -= 1.f;
+    if (window.isKeyPressed(mk::Input::Key::S))
+      yFactor += 1.f;
+    if (window.isKeyPressed(mk::Input::Key::A))
+      xFactor -= 1.f;
+    if (window.isKeyPressed(mk::Input::Key::D))
+      xFactor += 1.f;
+
+    player.move(mk::Space::normalize({xFactor, yFactor}) * window.getDeltaTime() * 300.f);
+
+    mk::Shapes::Collision::AABB(player.getBounds(), zone.getBounds())
+      ? player.setFillColor(mk::Color::Blue)
+      : player.setFillColor(mk::Color::Red);
+
     window.clear();
-    defaultShader.Use();
 
-    camera.updateMatrix();
-    camera.applyMatrix(defaultShader);
-
-    for (const auto& rectangle : rectangles)
-      shapeRenderer.render(rectangle);
+    shapeRenderer.use();
+    shapeRenderer.render(zone);
+    shapeRenderer.render(player);
 
     window.display();
   }

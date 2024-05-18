@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <array>
+#include <algorithm>
 
 #include "Core/Constants.hpp"
 #include "Core/Setup.hpp"
