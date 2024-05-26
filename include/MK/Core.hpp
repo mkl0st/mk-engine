@@ -8,6 +8,7 @@
 #include "Core/Constants.hpp"
 #include "Core/Setup.hpp"
 #include "Core/File.hpp"
+#include "Core/Image.hpp"
 #include "Core/Space.hpp"
 #include "Core/Input.hpp"
 #include "Core/Debug.hpp"

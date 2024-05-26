@@ -54,6 +54,97 @@ std::string mk::File::getContents(const std::string& path)
   return buffer.str();
 }
 
+bool mk::Image::loadFromPNG(const std::string& pngPath, GLubyte** oData, GLuint& oWidth, GLuint& oHeight, bool& oHasAlpha)
+{
+  FILE* imageFile = fopen(pngPath.c_str(), "rb");
+  if (!imageFile)
+  {
+    std::cerr << "Failed to open image (" << pngPath << ")!\n";
+    return false;
+  }
+
+  png_structp pngPointer = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  if (!pngPointer)
+  {
+    std::cerr << "Failed to create a PNG read struct!\n";
+    fclose(imageFile);
+    return false;
+  }
+
+  png_infop pngInfoPointer = png_create_info_struct(pngPointer);
+  if (!pngInfoPointer)
+  {
+    std::cerr << "Failed to create a PNG info struct!\n";
+    png_destroy_read_struct(&pngPointer, NULL, NULL);
+    fclose(imageFile);
+    return false;
+  }
+
+  if (setjmp(png_jmpbuf(pngPointer)))
+  {
+    png_destroy_read_struct(&pngPointer, NULL, NULL);
+    fclose(imageFile);
+    return false;
+  }
+
+  png_init_io(pngPointer, imageFile);
+  png_read_info(pngPointer, pngInfoPointer);
+
+  oWidth = png_get_image_width(pngPointer, pngInfoPointer);
+  oHeight = png_get_image_height(pngPointer, pngInfoPointer);
+  png_byte colorType = png_get_color_type(pngPointer, pngInfoPointer);
+  png_byte bitDepth = png_get_bit_depth(pngPointer, pngInfoPointer);
+
+  if (colorType == PNG_COLOR_TYPE_PALETTE)
+  {
+    png_set_palette_to_rgb(pngPointer);
+  }
+  else if (colorType ==  PNG_COLOR_TYPE_GRAY && bitDepth < 8)
+  {
+    png_set_expand_gray_1_2_4_to_8(pngPointer);
+  }
+
+  if (png_get_valid(pngPointer, pngInfoPointer, PNG_INFO_tRNS))
+  {
+    png_set_tRNS_to_alpha(pngPointer);
+  }
+
+  if (bitDepth == 16)
+  {
+    png_set_strip_16(pngPointer);
+  }
+  if (colorType == PNG_COLOR_TYPE_GRAY || colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
+  {
+    png_set_gray_to_rgb(pngPointer);
+  }
+
+  png_read_update_info(pngPointer, pngInfoPointer);
+
+  *oData = (GLubyte*)malloc(png_get_rowbytes(pngPointer, pngInfoPointer) * oHeight);
+  if (!*oData)
+  {
+    std::cerr << "Failed to allocate memory for image data!\n";
+    png_destroy_read_struct(&pngPointer, NULL, NULL);
+    fclose(imageFile);
+    return false;
+  }
+
+  png_bytep* rowPointers = (png_bytep*)malloc(sizeof(png_bytep) * oHeight);
+  for (int y = 0; y < oHeight; y++)
+  {
+    rowPointers[y] = *oData + (png_get_rowbytes(pngPointer, pngInfoPointer) * y);
+  }
+
+  png_read_image(pngPointer, rowPointers);
+  png_free(pngPointer, rowPointers);
+  png_destroy_read_struct(&pngPointer, NULL, NULL);
+
+  oHasAlpha = (colorType & PNG_COLOR_MASK_ALPHA) != 0;
+
+  fclose(imageFile);
+  return true;
+}
+
 mk::Space::Mat4 mk::Space::translate(mk::Space::Mat4 mat, const mk::Space::Vec2& vec)
 {
   mat[3][0] = vec.x;

@@ -7,14 +7,23 @@
 #include <MK/Graphics.hpp>
 
 // Window Settings
-constexpr unsigned int WINDOW_WIDTH  {800u};
-constexpr unsigned int WINDOW_HEIGHT {600u};
+constexpr unsigned int WINDOW_WIDTH  {768u};
+constexpr unsigned int WINDOW_HEIGHT {432u};
 const     std::string  WINDOW_TITLE  {"MK Engine"};
 
 int main()
 {
   // Initializing GLFW
   mk::Core::initializeGLFW();
+
+  // Loading Image
+  GLubyte* data;
+  GLuint imageWidth;
+  GLuint imageHeight;
+  bool hasAlpha;
+  mk::Image::loadFromPNG("resources/Textures/tile.png", &data, imageWidth, imageHeight, hasAlpha);
+  std::cout << (unsigned int)data[0] << ' ' << (unsigned int)data[1] << ' ' << (unsigned int)data[2] << '\n';
+  delete data;
 
   // Creating a Window
   mk::Window window
